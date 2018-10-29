@@ -7,17 +7,17 @@ Link
 
 
 
-# sigma.js - v1.2.1
+### sigma.js - v1.2.1
 
 Sigma is a JavaScript library dedicated to graph drawing, mainly developed by [@jacomyal](https://github.com/jacomyal) and [@Yomguithereal](https://github.com/Yomguithereal).
 
-### Resources
+#### Resources
 
 [The website](http://sigmajs.org) provides a global overview of the project, and the documentation is available in the [Github Wiki](https://github.com/jacomyal/sigma.js/wiki).
 
 Also, the `plugins` and `examples` directories contain various use-cases that might help you understand how to use sigma.
 
-### How to use it
+#### How to use it
 
 To use it, clone the repository:
 
@@ -34,7 +34,7 @@ To build the code:
 
 Also, you can customize the build by adding or removing files from the `coreJsFiles` array in `Gruntfile.js` before applying the grunt task.
 
-### Contributing
+#### Contributing
 
 You can contribute by submitting [issues tickets](http://github.com/jacomyal/sigma.js/issues) and proposing [pull requests](http://github.com/jacomyal/sigma.js/pulls). Make sure that tests and linting pass before submitting any pull request by running the command `grunt`.
 
