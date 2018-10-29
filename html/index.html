@@ -391,16 +391,21 @@
 
         //Add a new edge determined by node ID values
         function addEdge() {
-            s.graph.addEdge({
-                id: Math.random(),
-                // Reference extremities:
-                source: document.getElementsByName('source')[0].value,
-                target: document.getElementsByName('target')[0].value,
-                color: document.getElementsByName('chosencolour')[0].value,
-                type: 'arrow',
-                size: 1,
-                label: document.getElementsByName('nodename')[0].value
-            });
+            number = (s.graph.edges().length) + 1;
+            try {
+                s.graph.addEdge({
+                    id: ( (number)),
+                    // Reference extremities:
+                    source: document.getElementsByName('source')[0].value,
+                    target: document.getElementsByName('target')[0].value,
+                    color: document.getElementsByName('chosencolour')[0].value,
+                    type: 'arrow',
+                    size: 1,
+                    label: document.getElementsByName('nodename')[0].value
+                });
+            } catch (err) {
+                console.log("Error with adding node.")
+            }
         }
 
         //Delete all nodes
