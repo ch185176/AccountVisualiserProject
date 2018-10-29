@@ -1,0 +1,185 @@
+commit ab7932e075c40f5a4b6465ba75b91022a3892167
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Wed Aug 1 16:20:59 2018 +0100
+
+    Made JQuery and CSS files local in order to improve load times
+
+commit 8a398cd7219db252b210abe036dc55a8c51434b4
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jul 17 13:17:17 2018 +0100
+
+    Small fixes with clicking the stage to clear information
+
+commit a03f12c8cbd785992aa643e46beea98e7e851751
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jul 17 12:54:35 2018 +0100
+
+    Updated binding commands to show node and edge details successfully in side panel
+
+commit 9cdfa03d3fcafff2da018a1f5ae0773b23a39b51
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jul 16 13:58:02 2018 +0100
+
+    Updated function unbind commands to enable node ID identification when boxes are unchecked
+
+commit b39cdd0cef98485d20aab46edfd29fcaeaad8272
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jul 3 20:32:54 2018 +0100
+
+    Multiple nodes are now highlighted in the highlight.py file correctly
+
+commit 27e641973ee0cc1ba229174ac6c4dc6df1fb8130
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jul 3 13:08:56 2018 +0100
+
+    A single node can be highlighted from python
+
+commit 77fdc8b8b7946d7bab61daa98085417eddca399d
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Fri Jun 29 16:30:51 2018 +0100
+
+    When user clicks on stage the NodeID textarea wipes.  Added function to highlight all nodes bordercolour.  Added custom renderer for bordercolour.
+
+commit 46e652708f70a48ca4f3e569da348c221239882f
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Wed Jun 27 15:12:20 2018 +0100
+
+    small changes with node numbering incrementing by 2 by accident. Label, Colour and Node Type can now be changed on the fly with the side menu
+
+commit 9d259e207ce11a4898566815640ff46a26018836
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Wed Jun 27 14:24:06 2018 +0100
+
+    Fixed a problem with adding nodes, the default ID is now the total nodes plus one, added the function to add label to selected node by pressing enter in text box
+
+commit 38e1677a593106f0a55a0e9695b645bfec9a2db7
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 26 16:18:13 2018 +0100
+
+    Added test code to hightlight Node1
+
+commit 19231dc7f70a454933123735818a7b888763bd80
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 26 14:44:59 2018 +0100
+
+    Small changes
+
+commit bf2a05cf101305414b90a5baea7de498546ea182
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 25 15:27:51 2018 +0100
+
+    Disabled other checkboxes if others are enabled
+
+commit 5ad40a5ae31c7b390dcde2958d3a76bc8650ee75
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 25 13:32:55 2018 +0100
+
+    Enabled edges to change colour after EdgeHovering was enabled
+
+commit d80234692a7f98894be2033c45789b26c939abe7
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Sat Jun 23 13:41:05 2018 +0100
+
+    Got the chat area to show in the textarea instead of the div
+
+commit 5ddb89a502d1e9f92059e1f717380ce653a1df63
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Wed Jun 20 20:07:38 2018 +0100
+
+    load JSON function now works as intended and works with the contextual menu
+
+commit bbabc21afac9b57cb29dbe1063041732eae455b8
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 19 16:09:32 2018 +0100
+
+    added new folders and python files to work on
+
+commit 0b0f0c4fac22c6c337d022ec51c2dfa80b332cc8
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 19 15:39:13 2018 +0100
+
+    Added textbox to add JSON file
+
+commit fc954b75fe611aba26dc71a0d05f1ecd1c5be821
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 18 14:15:58 2018 +0100
+
+    small fixes
+
+commit 8de301a37392e250b7aee1825d9c8b69bec51e0b
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 18 13:55:32 2018 +0100
+
+    added new colour palette and edge node function
+
+commit 214fa7ae13fc800c8b86c690d39df3c8d7640a8d
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Thu Jun 14 16:44:21 2018 +0100
+
+    Small changes
+
+commit b48fab84b863c2dac8c8e72b26108439b8c30c62
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Thu Jun 14 16:26:35 2018 +0100
+
+    Commented code and added NodeIDs to be incremental
+
+commit 103c0eddbe82c7eca0cb38abf1eb272dde4cb61f
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Thu Jun 14 14:27:45 2018 +0100
+
+    added button to change colour of node, soon will update with user value
+
+commit e48b5beababe3877c58d7fe31429a798a2976546
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 11 13:41:22 2018 +0000
+
+    Replace index.html
+
+commit 83c9a32b727237761b1319df17e4c52a595e2c8a
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 11 13:29:24 2018 +0000
+
+    Delete node_frontend.html
+
+commit 5e1edf1082a1e19f28ad558347cacbf5f2412c27
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Mon Jun 11 14:27:48 2018 +0100
+
+    Added basic deletion toggle
+
+commit baa7a1846bccea59fe7de70737c1e37b9ebc8f26
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Sat Jun 9 12:55:05 2018 +0100
+
+    Worked on the Load JSON example adding a larger diagram
+
+commit 5feda0e9f65cf0e522d1770c00423f2399a23e5b
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Sat Jun 9 01:11:04 2018 +0100
+
+    Added more Edge and node colours
+
+commit 243919c70b0e48445a7915ae3eee9478c58289dc
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Thu Jun 7 19:28:58 2018 +0100
+
+    Updated the export JSON function to download a copy to the client machine
+
+commit 41e76066caed6eb897b11fffdfdbb3c62917cf3e
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Wed Jun 6 12:27:47 2018 +0100
+
+    Updated JSON function to make it interactive
+
+commit b673d482e89bccb6602cab35d03ff668641c98bd
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 5 12:41:04 2018 +0100
+
+    Updated LICENSE.txt file
+
+commit e64b119cb680affd4fe29e06e7d59a5d288b43a4
+Author: Callum Coward <callumcoward@gmail.com>
+Date:   Tue Jun 5 12:26:32 2018 +0100
+
+    Initial commit
