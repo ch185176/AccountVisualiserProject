@@ -6,10 +6,8 @@ This is a fork of "Account Visualiser" by Callum Coward for the purposes of an h
 Link
 
 
-[![Build Status](https://travis-ci.org/jacomyal/sigma.js.svg)](https://travis-ci.org/jacomyal/sigma.js)
 
-sigma.js - v1.2.1
-=================
+# sigma.js - v1.2.1
 
 Sigma is a JavaScript library dedicated to graph drawing, mainly developed by [@jacomyal](https://github.com/jacomyal) and [@Yomguithereal](https://github.com/Yomguithereal).
 
