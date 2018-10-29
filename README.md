@@ -1,3 +1,11 @@
+Account Visualiser
+=================
+This is a fork of "Account Visualiser" by Callum Coward for the purposes of an honours project.
+
+### UnForked Repository
+Link
+
+
 [![Build Status](https://travis-ci.org/jacomyal/sigma.js.svg)](https://travis-ci.org/jacomyal/sigma.js)
 
 sigma.js - v1.2.1
