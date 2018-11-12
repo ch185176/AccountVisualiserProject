@@ -134,6 +134,7 @@
     <script src="../plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
     <script>
         var url = 'img/img1.png';
+        var node = null;
 
         //context menu
         var linkElement = document.createElement("link");
@@ -380,7 +381,8 @@
                     size: 100,
                     color: document.getElementsByName('chosencolour')[0].value,
                     type: document.getElementsByName('chosenshape')[0].value,
-                    borderColor: '#fff'
+                    borderColor: '#fff',
+                    fixed: true
                 });
 
             } catch (err) {
@@ -419,7 +421,7 @@
         //Delete a selected node if clicked
         function deleteSelectedNode() {
             s.bind('clickNode', function(e) {
-                var node = e.data.node;
+                node = e.data.node;
                 node.hidden = true;
                 s.refresh();
 
@@ -475,11 +477,17 @@
         window.setInterval(function() {
             s.refresh();
         }, 100);
+        
+        //enable node dragging on selected node
+        s.bind('clickNode', function(e) {
+            node = e.data.node;
+            node.fixed = false;  
+        });
 
         //tell me the node properties in the side menu
         s.bind('clickNode', function(e) {
             deleteSelectedNode()
-            var node = e.data.node;
+            node = e.data.node;
             document.getElementsByName('nodeTextArea')[0].value = node.id;
             document.getElementsByName('chosencolour')[0].value = node.color;
             document.getElementsByName('chosenshape')[0].value = node.type;
@@ -506,7 +514,7 @@
             // If the checkbox is checked, enable click to delete
             if (checkBox.checked == true) {
                 s.bind('clickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     node.hidden = true;
                     s.refresh();
                 });
@@ -514,7 +522,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -545,7 +553,7 @@
             if (checkBox.checked == true) {
                 s.unbind();
                 s.bind('clickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     node.color = document.getElementsByName('chosencolour')[0].value;
                     s.refresh();
                 });
@@ -559,7 +567,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -609,7 +617,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -645,7 +653,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -678,13 +686,13 @@
                 $("#overmenu").hide(); //overmenu contains the div that the context menu is in by hiding it the menu wont pop up in edge mode
                 s.unbind();
                 s.bind('clickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('source')[0].value = node.id; //set source node with left click
                     s.refresh();
                 });
 
                 s.bind('rightClickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('target')[0].value = node.id; //set target node with right click
                     addEdge(); //immediately add the edge
                     s.refresh();
@@ -696,7 +704,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -738,7 +746,7 @@
             var incrementer;
             var renderer = s.renderers[0];
             for (incrementer = 1; incrementer < s.graph.nodes().length + 1; incrementer++) {
-                var node = s.graph.nodes('Node' + incrementer);
+                node = s.graph.nodes('Node' + incrementer);
                 node.borderColor = '#000';
             }
         }
@@ -750,7 +758,7 @@
             if (checkBox.checked == true) {
                 s.unbind();
                 s.bind('clickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     node.label = document.getElementsByName('nodename')[0].value;
                     s.refresh();
                 });
@@ -764,7 +772,7 @@
                 s.unbind();
                 s.bind('clickNode', function(e) {
                     deleteSelectedNode()
-                    var node = e.data.node;
+                    node = e.data.node;
                     document.getElementsByName('nodeTextArea')[0].value = node.id;
                     document.getElementsByName('chosencolour')[0].value = node.color;
                     document.getElementsByName('chosenshape')[0].value = node.type;
@@ -789,21 +797,21 @@
 
         //Manual function to add label without click
         function addLabel() {
-            var node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
             node.label = document.getElementsByName('nodename')[0].value;
             s.refresh();
         }
 
         //Manual function to change shape without click
         function changeShape() {
-            var node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
             node.type = document.getElementsByName('chosenshape')[0].value;
             s.refresh();
         }
 
         //Manual function to change colour without click
         function changeColour() {
-            var node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
             node.color = document.getElementsByName('chosencolour')[0].value;
             s.refresh();
         }
@@ -824,7 +832,7 @@
             if (checkBox.checked == true) {
                 s.unbind();
                 s.bind('clickNode', function(e) {
-                    var node = e.data.node;
+                    node = e.data.node;
                     node.type = document.getElementsByName('chosenshape')[0].value;
                     s.refresh();
                 });
@@ -869,6 +877,7 @@
                 $("#nodeNameArea").val('');
                 $("#sourceArea").val('');
                 $("#targetArea").val('');
+                node.fixed = true;
             });
         }
     </script>
