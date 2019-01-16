@@ -1,0 +1,954 @@
+<!--Based on SigmaJS | Coded by Callum Coward age 25-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Callum's fantastic node program</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-menu.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/jquery-menu.css" />
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        #container {
+            position: absolute;
+            width: 88.1%;
+            height: 95%;
+            background-color: #f0ead6;
+        }
+
+        #chatarea {
+            position: absolute;
+            width: 88.1%;
+            height: 5%;
+            background-color: #FFFFFF;
+            top: 95%
+        }
+
+        #sidebar {
+            bottom: 0;
+            right: 0;
+            width: 200px;
+            height: 65%;
+            position: absolute;
+            background-color: #999;
+            padding: 10px;
+        }
+
+        #hidetoggle {
+            bottom: 65%;
+            right: 0;
+            width: 200px;
+            height: 35%;
+            position: absolute;
+            background-color: #999;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body onload="clearName();">
+    <div id="overmenu">
+        <div id="callbackmenu">
+            <ul>
+                <li id="addNode"><a href="#Item1">Add Node</a></li>
+                <li id="addEdge"><a href="#Item2">Add Edge</a></li>
+                <li id="JSON"><a href="#Item3">JSON</a>
+                    <ul>
+                        <li id="loadJSON"><a href="#Item3.1">Load JSON</a></li>
+                        <li id="exportJSON"><a href="#Item3.2">Export JSON</a></li>
+                    </ul>
+                </li>
+                <li id="deleteAllNode" class="separator"><a href="#Item4">Wipe Canvas</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="container" class="callback1" style="border-style:solid"></div>
+    <!-- START SIGMA IMPORTS -->
+    <script src="../src/sigma.core.js"></script>
+    <script src="../src/conrad.js"></script>
+    <script src="../src/utils/sigma.utils.js"></script>
+    <script src="../src/utils/sigma.polyfills.js"></script>
+    <script src="../src/sigma.settings.js"></script>
+    <script src="../src/classes/sigma.classes.dispatcher.js"></script>
+    <script src="../src/classes/sigma.classes.configurable.js"></script>
+    <script src="../src/classes/sigma.classes.graph.js"></script>
+    <script src="../src/classes/sigma.classes.camera.js"></script>
+    <script src="../src/classes/sigma.classes.quad.js"></script>
+    <script src="../src/classes/sigma.classes.edgequad.js"></script>
+    <script src="../src/captors/sigma.captors.mouse.js"></script>
+    <script src="../src/captors/sigma.captors.touch.js"></script>
+    <script src="../src/renderers/sigma.renderers.canvas.js"></script>
+    <script src="../src/renderers/sigma.renderers.webgl.js"></script>
+    <script src="../src/renderers/sigma.renderers.svg.js"></script>
+    <script src="../src/renderers/sigma.renderers.def.js"></script>
+    <script src="../src/renderers/webgl/sigma.webgl.nodes.def.js"></script>
+    <script src="../src/renderers/webgl/sigma.webgl.nodes.fast.js"></script>
+    <script src="../src/renderers/webgl/sigma.webgl.edges.def.js"></script>
+    <script src="../src/renderers/webgl/sigma.webgl.edges.fast.js"></script>
+    <script src="../src/renderers/webgl/sigma.webgl.edges.arrow.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.labels.def.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.hovers.def.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.nodes.def.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edges.def.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edges.curve.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edges.arrow.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edges.curvedArrow.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edgehovers.def.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edgehovers.curve.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edgehovers.arrow.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.edgehovers.curvedArrow.js"></script>
+    <script src="../src/renderers/canvas/sigma.canvas.extremities.def.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.utils.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.nodes.def.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.edges.def.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.edges.curve.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.labels.def.js"></script>
+    <script src="../src/renderers/svg/sigma.svg.hovers.def.js"></script>
+    <script src="../src/middlewares/sigma.middlewares.rescale.js"></script>
+    <script src="../src/middlewares/sigma.middlewares.copy.js"></script>
+    <script src="../src/misc/sigma.misc.animation.js"></script>
+    <script src="../src/misc/sigma.misc.bindEvents.js"></script>
+    <script src="../src/misc/sigma.misc.bindDOMEvents.js"></script>
+    <script src="../src/misc/sigma.misc.drawHovers.js"></script>
+    <!-- END SIGMA IMPORTS -->
+    <script src="../plugins/sigma.plugins.dragNodes/sigma.plugins.dragNodes.js"></script>
+    <script src="../plugins/sigma.renderers.edgeLabels/settings.js"></script>
+    <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.def.js"></script>
+    <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curve.js"></script>
+    <script src="../plugins/sigma.renderers.edgeLabels/sigma.canvas.edges.labels.curvedArrow.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.dashed.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.dotted.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.parallel.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edges.tapered.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.dashed.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.dotted.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.parallel.js"></script>
+    <script src="../plugins/sigma.renderers.customEdgeShapes/sigma.canvas.edgehovers.tapered.js"></script>
+    <script src="../plugins/sigma.renderers.customShapes/shape-library.js"></script>
+    <script src="../plugins/sigma.renderers.customShapes/sigma.renderers.customShapes.js"></script>
+    <script src="../plugins/sigma.parsers.json/sigma.parsers.json.js"></script>
+    <script>
+        var url = 'img/img1.png';
+        var node = null;
+
+        //JSON Object from form
+        var formjson = JSON.parse(localStorage.getItem("jsongraph"));
+        console.log(formjson);
+        //context menu
+        var linkElement = document.createElement("link");
+        linkElement.rel = "stylesheet";
+        linkElement.href = "css/jquery-menu.css";
+        document.head.appendChild(linkElement);
+        $(document).ready(function() {
+
+            $('.callback1').catMenu({
+                menu: 'callbackmenu',
+                on_select: function(e) {
+                    if (e.id == 'addNode') {
+                        addNode();
+                    }
+                    if (e.id == 'addEdge') {
+                        addEdge();
+                    }
+                    if (e.id == 'deleteAllNode') {
+                        deleteAllNode();
+                    }
+                    if (e.id == 'loadJSON') {
+                        loadJSON();
+                    }
+                    if (e.id == 'exportJSON') {
+                        exportJSON();
+                    }
+
+                }
+            });
+
+            $("#compute").click(function() {
+                var xmlhttp;
+
+                if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else { // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        document.getElementById("chatresponse").innerHTML = xmlhttp.responseText;
+
+
+                    } else if (xmlhttp.readyState == 4) {
+                        // document.write(xmlhttp.status + xmlhttp.statusText);
+                        console.log('Status=', xmlhttp.statusText);
+                        alert(xmlhttp.statusText);
+
+                    }
+                }
+
+                s.refresh();
+                var fullgraph = {
+                    nodes: s.graph.nodes(),
+                    edges: s.graph.edges()
+                }
+                var myJSON = JSON.stringify(fullgraph);
+
+                xmlhttp.open("POST", "/cgi-bin/compute.py", true);
+                xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                xmlhttp.send("graph=" + myJSON);
+            });
+
+            $("#highlight").click(function() {
+                var xmlhttp;
+                //var chosenHighlight = '-1';
+                if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp = new XMLHttpRequest();
+                } else { // code for IE6, IE5
+                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                      document.getElementById("chatresponse").innerHTML = xmlhttp.responseText;
+                      //chosenHighlight to be renamed and used with str.split()
+                      highlightResponse = String(xmlhttp.responseText);
+                      //alert(chosenHighlight);
+                      s.refresh();
+                      //Code highlights specified node
+                      var renderer = s.renderers[0];
+                      //split the string into an array
+                      splitter = highlightResponse.split(',');
+                      //highlight node for each array element
+                      for(i=0; i < splitter.length; i++){
+                        s.graph.nodes(Number(splitter[i]).toString()).borderColor = '#000';
+                      }
+
+
+
+                    } else if (xmlhttp.readyState == 4) {
+                        // document.write(xmlhttp.status + xmlhttp.statusText);
+                        console.log('Status=', xmlhttp.statusText);
+                        alert(xmlhttp.statusText);
+
+                    }
+                }
+
+                s.refresh();
+                var fullgraph = {
+                    nodes: s.graph.nodes(),
+                    edges: s.graph.edges()
+                }
+                var myJSON = JSON.stringify(fullgraph);
+
+                //xmlhttp.open("POST", "/cgi-bin/compute.py", true);
+                xmlhttp.open("POST", "/cgi-bin/highlight.py", true);
+                xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+                xmlhttp.send("graph=" + myJSON);
+
+
+            });
+
+
+
+        });
+
+        //Initialize sigma:
+        var s = new sigma({
+            renderer: {
+                container: document.getElementById('container'),
+                type: 'canvas'
+            },
+            settings: {
+                edgeLabelSize: 'proportional',
+                minEdgeSize: 0.1,
+                maxEdgeSize: 2,
+                minNodeSize: 1,
+                maxNodeSize: 10,
+                autoRescale: true,
+                enableEdgeHovering: true,
+                zoomMax: 5,
+                autoResize: false
+
+
+            }
+        });
+
+        ;
+        (function(undefined) {
+
+            /**
+             * Sigma Node Border Custom Renderer
+             * ==================================
+             *
+             * The aim of this simple node renderer is to enable the user to display
+             * colored node borders.
+             *
+             * Author: Guillaume Plique (Yomguithereal)
+             * Version: 0.0.1
+             */
+
+            sigma.canvas.nodes.border = function(node, context, settings) {
+                var prefix = settings('prefix') || '';
+
+                context.fillStyle = node.color || settings('defaultNodeColor');
+                context.beginPath();
+                context.arc(
+                    node[prefix + 'x'],
+                    node[prefix + 'y'],
+                    node[prefix + 'size'],
+                    0,
+                    Math.PI * 2,
+                    true
+                );
+
+                context.closePath();
+                context.fill();
+
+                context.lineWidth = node.borderWidth || 1;
+                context.strokeStyle = node.borderColor || '#fff';
+                context.stroke();
+            };
+        }).call(this);
+
+        //Number for node count
+        var number = 0;
+
+        //Value for node x and y coordinates
+        var xVal = 0;
+        var yVal = 0;
+
+        // Initialize the dragNodes plugin:
+        //With the dragNodes plugin the user can click and drag the nodes on the canvas
+        var dragListener = sigma.plugins.dragNodes(s, s.renderers[0]);
+
+        dragListener.bind('startdrag', function(event) {
+            console.log(event);
+        });
+        dragListener.bind('drag', function(event) {
+            console.log(event);
+        });
+        dragListener.bind('drop', function(event) {
+            console.log(event);
+        });
+        dragListener.bind('dragend', function(event) {
+            console.log(event);
+        });
+
+        console.log("Loading Form")
+        s.graph.clear();
+        s.graph.read(formjson);
+        s.refresh();
+        
+        
+        //Saves the JSON output in the text area to a file
+        function saveTextAsJSON() {
+            var currentTime = new Date();
+            var textToSave = document.getElementById("jsonTextArea").value;
+            var textToSaveAsBlob = new Blob([textToSave], {
+                type: "text/plain"
+            });
+            var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+            var fileNameToSaveAs = currentTime + ".json"
+
+            var downloadLink = document.createElement("a");
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = "Download File";
+            downloadLink.href = textToSaveAsURL;
+            downloadLink.onclick = destroyClickedElement;
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+
+            downloadLink.click();
+        }
+
+        function destroyClickedElement(event) {
+            document.body.removeChild(event.target);
+        }
+
+
+
+
+        //Add a new node to the canvas
+        function addNode() {
+            var nId = "Node";
+            //Set new node number to be the total nodes plus one
+            number = (s.graph.nodes().length) + 1;
+
+
+            try {
+                s.graph.addNode({
+                    // Main attributes:
+                    id: ( (number)),
+                    label: document.getElementsByName('nodename')[0].value,
+                    // Display attributes:
+                    x: (xVal += 0.03),
+                    y: (yVal),
+                    size: 100,
+                    color: document.getElementsByName('chosencolour')[0].value,
+                    type: document.getElementsByName('chosenshape')[0].value,
+                    borderColor: '#fff',
+                    fixed: true
+                });
+
+            } catch (err) {
+                console.log("Error with adding node.")
+            }
+
+        }
+
+        //Add a new edge determined by node ID values
+        function addEdge() {
+            number = (s.graph.edges().length) + 1;
+            try {
+                s.graph.addEdge({
+                    id: ( (number)),
+                    // Reference extremities:
+                    source: document.getElementsByName('source')[0].value,
+                    target: document.getElementsByName('target')[0].value,
+                    color: document.getElementsByName('chosencolour')[0].value,
+                    type: 'arrow',
+                    size: 1,
+                    label: document.getElementsByName('nodename')[0].value
+                });
+            } catch (err) {
+                console.log("Error with adding node.")
+            }
+        }
+
+        //Delete all nodes
+        function deleteAllNode() {
+            //this gets rid of all the nodes and edges
+            s.graph.clear();
+            //this gets rid of any methods you've attached to s.
+            s.refresh();
+        }
+
+        //Delete a selected node if clicked
+        function deleteSelectedNode() {
+            s.bind('clickNode', function(e) {
+                node = e.data.node;
+                node.hidden = true;
+                s.refresh();
+
+            });
+        }
+
+
+        function readFile(evt) {
+            //Retrieve all the files from the FileList object
+            var f = evt.target.files[0];
+            var textType = /.*/;
+            if (f.type.match(textType)) {
+                console.log("imhere")
+                var r = new FileReader();
+                r.onload = (function(f) {
+                    return function(e) {
+                        var contents = e.target.result;
+                        graph = JSON.parse(contents);
+                        s.graph.clear();
+                        s.graph.read(graph);
+                        s.refresh();
+                    };
+                })(f);
+                r.readAsText(f);
+            } else {
+                alert("Failed to load file.");
+            }
+        }
+
+
+
+        //Load JSON from specific location
+        function loadJSON() {
+            if (FileReader) {
+                f = document.getElementById('fileInput');
+                f.click();
+                console.log("click");
+            } else {
+                alert('The file reader API is not supported by this browser!');
+            }
+        }
+
+        //Export JSON to a text area and save it as a file
+        function exportJSON() {
+            var fullgraph = {
+                nodes: s.graph.nodes(),
+                edges: s.graph.edges()
+            }
+            s.refresh();
+            var myJSON = JSON.stringify(fullgraph);
+            document.getElementById("jsonTextArea").innerHTML = myJSON;
+            saveTextAsJSON();
+        }
+
+        window.setInterval(function() {
+            s.refresh();
+        }, 100);
+        
+        //enable node dragging on selected node
+        s.bind('clickNode', function(e) {
+            node = e.data.node;
+            node.fixed = false;  
+        });
+
+        //tell me the node properties in the side menu
+        s.bind('clickNode', function(e) {
+            deleteSelectedNode()
+            node = e.data.node;
+            document.getElementsByName('nodeTextArea')[0].value = node.id;
+            document.getElementsByName('chosencolour')[0].value = node.color;
+            document.getElementsByName('chosenshape')[0].value = node.type;
+            document.getElementsByName('nodename')[0].value = node.label;
+            console.log(node.id);
+        });
+
+        //tell me the edge properties in the side menu
+        s.bind('clickEdge', function(e) {
+            var edge = e.data.edge;
+            document.getElementsByName('nodeTextArea')[0].value = edge.id;
+            document.getElementsByName('chosencolour')[0].value = edge.color;
+            document.getElementsByName('nodename')[0].value = edge.label;
+            document.getElementsByName('source')[0].value = edge.source;
+            document.getElementsByName('target')[0].value = edge.target;
+            s.refresh();
+        });
+
+        //function allows user to delete node on click
+        function deleteToggle() {
+            // Get the checkbox
+            var checkBox = document.getElementById("deleteCheck");
+
+            // If the checkbox is checked, enable click to delete
+            if (checkBox.checked == true) {
+                s.bind('clickNode', function(e) {
+                    node = e.data.node;
+                    node.hidden = true;
+                    s.refresh();
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+                clearName();
+
+            }
+        }
+
+        //function allows user to change node colour on click
+        function colourToggle() {
+            // Get the checkbox
+            var checkBox = document.getElementById("colourCheck");
+
+            // If the checkbox is checked, enable click to change colour
+            if (checkBox.checked == true) {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    node = e.data.node;
+                    node.color = document.getElementsByName('chosencolour')[0].value;
+                    s.refresh();
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    edge.color = document.getElementsByName('chosencolour')[0].value;
+                    s.refresh();
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+
+            }
+        }
+
+        //function allows user to add node shape on click
+        function nodeToggle() {
+            // Get the checkbox
+            var checkBox = document.getElementById("nodeCheck");
+            var nId = "Node";
+
+            // If the checkbox is checked, enable click to change colour
+            if (checkBox.checked == true) {
+                s.bind('clickStage', function(e) {
+                    s.graph.addNode({
+                        // Main attributes:
+                        id: ((nId) + (++number)),
+                        label: document.getElementsByName('nodename')[0].value,
+                        // Display attributes:
+                        x: (xVal += 0.03),
+                        y: (yVal),
+                        size: 100,
+                        color: document.getElementsByName('chosencolour')[0].value,
+                        type: document.getElementsByName('chosenshape')[0].value,
+                        borderColor: '#fff'
+                    });
+                    s.refresh();
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+
+            }
+        }
+
+        // If the checkbox is checked, enable click to determine mouse position
+        function nodeAtPos() {
+            var checkBox = document.getElementById("posCheck");
+
+            if (checkBox.checked == true) {
+                s.bind('clickStage', function(e) {
+                    // Check captor for coordinates
+                    console.log(e.data.captor);
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+
+            }
+        }
+
+        //function allows user to add edges on left and right click
+        function edgeToggle() {
+            // Get the checkbox
+            var checkBox = document.getElementById("edgeCheck");
+
+            // If the checkbox is checked, enable click to change colour
+            if (checkBox.checked == true) {
+                $("#overmenu").hide(); //overmenu contains the div that the context menu is in by hiding it the menu wont pop up in edge mode
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    node = e.data.node;
+                    document.getElementsByName('source')[0].value = node.id; //set source node with left click
+                    s.refresh();
+                });
+
+                s.bind('rightClickNode', function(e) {
+                    node = e.data.node;
+                    document.getElementsByName('target')[0].value = node.id; //set target node with right click
+                    addEdge(); //immediately add the edge
+                    s.refresh();
+
+                });
+
+            } else {
+                $("#overmenu").show(); //show context menu when box unchecked
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+
+            }
+        }
+
+        //function allows user to change menu visibility on click
+        function menuToggle() {
+            // Get the checkbox
+            var checkBox = document.getElementById("menuCheck");
+
+            // If the checkbox is checked, enable click to change menu visibility
+            if (checkBox.checked == true) {
+                $("#sidebar").hide();
+            } else {
+                $("#sidebar").show();
+
+            }
+        }
+
+        //function highlights all nodes with a black border
+        function highlightAllNodes() {
+            var incrementer;
+            var renderer = s.renderers[0];
+            for (incrementer = 1; incrementer < s.graph.nodes().length + 1; incrementer++) {
+                node = s.graph.nodes('Node' + incrementer);
+                node.borderColor = '#000';
+            }
+        }
+
+        //function allows user to change node label on click
+        function labelToggle() {
+            var checkBox = document.getElementById("toggleCheck");
+            // If the checkbox is checked, enable click to delete
+            if (checkBox.checked == true) {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    node = e.data.node;
+                    node.label = document.getElementsByName('nodename')[0].value;
+                    s.refresh();
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    edge.label = document.getElementsByName('nodename')[0].value;
+                    s.refresh();
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+
+            }
+        }
+
+        //Manual function to add label without click
+        function addLabel() {
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node.label = document.getElementsByName('nodename')[0].value;
+            s.refresh();
+        }
+
+        //Manual function to change shape without click
+        function changeShape() {
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node.type = document.getElementsByName('chosenshape')[0].value;
+            s.refresh();
+        }
+
+        //Manual function to change colour without click
+        function changeColour() {
+            node = s.graph.nodes(document.getElementsByName('nodeTextArea')[0].value);
+            node.color = document.getElementsByName('chosencolour')[0].value;
+            s.refresh();
+        }
+
+        //Manual function to change Edge colour without click [CURRENTLY NOT WORKING]
+        function changeEdgeColour() {
+            var edge = s.graph.edges(document.getElementsByName('nodeTextArea')[0].value);
+            edge.color = document.getElementsByName('chosencolour')[0].value;
+            s.refresh();
+        }
+
+
+
+        //function allows user to change node shape on click
+        function shapeToggle() {
+            var checkBox = document.getElementById("shapeCheck");
+            // If the checkbox is checked, enable click to delete
+            if (checkBox.checked == true) {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    node = e.data.node;
+                    node.type = document.getElementsByName('chosenshape')[0].value;
+                    s.refresh();
+                });
+            } else {
+                s.unbind();
+                s.bind('clickNode', function(e) {
+                    deleteSelectedNode()
+                    var node = e.data.node;
+                    document.getElementsByName('nodeTextArea')[0].value = node.id;
+                    document.getElementsByName('chosencolour')[0].value = node.color;
+                    document.getElementsByName('chosenshape')[0].value = node.type;
+                    document.getElementsByName('nodename')[0].value = node.label;
+                    console.log(node.id);
+                });
+
+                s.bind('clickEdge', function(e) {
+                    var edge = e.data.edge;
+                    document.getElementsByName('nodeTextArea')[0].value = edge.id;
+                    document.getElementsByName('chosencolour')[0].value = edge.color;
+                    document.getElementsByName('nodename')[0].value = edge.label;
+                    document.getElementsByName('source')[0].value = edge.source;
+                    document.getElementsByName('target')[0].value = edge.target;
+                    s.refresh();
+                });
+
+                clearName();
+            }
+        }
+
+        //stops more than one checkbox being checked
+        function checkChange(el) {
+            var checkName = document.getElementsByName(el.name);
+            for (var i = 0, c; c = checkName[i]; i++) {
+                c.disabled = !(!el.checked || c === el);
+            }
+        }
+
+        //clears the selected Node ID when the stage is selected
+        function clearName() {
+            s.bind('clickStage', function(e) {
+                $("#nodeIdArea").val('');
+                $("#nodeNameArea").val('');
+                $("#sourceArea").val('');
+                $("#targetArea").val('');
+                node.fixed = true;
+            });
+        }
+    </script>
+    <div id="chatarea" style="border-style:solid">
+        <textarea rows="2" cols="207" id="chatresponse" name="chatTextArea" style="margin: 0px; width: 100%; height: 100%;"></textarea>
+    </div>
+    <div id="hidetoggle" style="border-style:solid">
+        <input type="file" id="fileInput" style="display: none;">
+        <button id="compute" class="lined thin">Compute</button>
+        <button id="highlight" class="lined thin">Highlight</button>
+        <br> Hide Menu: <input type="checkbox" id="menuCheck" onclick="menuToggle()">
+        <br>Label Mode: <input type="checkbox" name="choice" id="toggleCheck" onclick="labelToggle();checkChange(this)">
+        <br>Node Mode: <input type="checkbox" name="choice" id="nodeCheck" onclick="nodeToggle();checkChange(this)">
+        <br>Edge Mode: <input type="checkbox" name="choice" id="edgeCheck" onclick="edgeToggle();checkChange(this)">
+        <br>Delete Mode: <input type="checkbox" name="choice" id="deleteCheck" onclick="deleteToggle();checkChange(this)">
+        <br>Colour Mode: <input type="checkbox" name="choice" id="colourCheck" onclick="colourToggle();checkChange(this)">
+        <br>Shape Mode: <input type="checkbox" name="choice" id="shapeCheck" onclick="shapeToggle();checkChange(this)">
+        <br>Pos Mode: <input type="checkbox" name="choice" id="posCheck" onclick="nodeAtPos();checkChange(this)">
+        <output id="list"></output>
+
+    </div>
+    <div id="sidebar" style="border-style:solid">
+        <br>Selected Node / Edge ID<textarea rows="1" cols="20" id="nodeIdArea" name="nodeTextArea"></textarea><br>
+        <br>Node Name / Edge Label<input type="text" id="nodeNameArea" name="nodename" onkeydown="if (event.keyCode == 13) document.getElementById('manualLabel').click()"><br>
+        <button type="button" id="manualLabel" onclick="addLabel()" style="display: none;">Add Label</button>
+
+        <br>Colour<br>
+        <select name="chosencolour" onchange="changeColour();changeEdgeColour()">
+          <option value="#FF0000" selected>Red</option>
+          <option value="#0000FF">Blue</option>
+          <option value="#00FF00">Green</option>
+          <option value="#000000">Black</option>
+          <option value="#696969">Grey</option>
+          <option value="#800080">Purple</option>
+          <option value="#FFA500">Orange</option>
+        </select>
+        <br>Node Type<br>
+        <select name="chosenshape" onchange="changeShape()">
+          <option value="star">Account</option>
+          <option value="circle" selected>Password</option>
+          <option value="square">Device</option>
+          <option value="diamond">Token</option>
+        </select>
+        <br>Source Node ID<input type="text"  id="sourceArea" name="source"><br>
+        <br>Target Node ID<input type="text" id="targetArea" name="target"><br>
+        <br>
+        <!--JSON output--><textarea rows="8" cols="20" id="jsonTextArea" style="display: none;"></textarea><br>
+    </div>
+</body>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', readFile, false);
+</script>
+
+</html>
+
+<!--<button onclick="addNode()">Add Node</button>
+<button onclick="addEdge()">Add Edge</button>
+<button onclick="deleteSelectedNode()">Delete Selected Node</button>
+<button onclick="deleteAllNode()">Delete All Nodes</button>
+<button onclick="loadDemo()">Load Demo</button>
+<button onclick="loadJSON()">Load JSON</button>
+<button onclick="exportJSON()">export JSON</button>-->
