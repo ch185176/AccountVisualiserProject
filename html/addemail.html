@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery-menu.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/jquery-menu.css" />
+        <title>Form Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript">
+            
+            var jsonoutput = "";
+            var sharepassword = false;
+            
+            window.onload = function() {
+                console.log("onload()");
+                document.getElementById('addemail').style.display = 'none';
+                document.getElementById('addpasswords').style.display = 'none';
+            };
+            function addemails(){
+                var emails = document.getElementById('addemails').elements.enum.value;
+                console.log("addemails()");
+                console.log("var emails = " + emails);
+                document.getElementById('addemails').style.display = 'none';
+                document.getElementById('addemail').style.display = 'block';               
+                
+                var form = "Give your Email Accounts Names <br>";
+                
+                for (i=1; i <= emails; i++)
+                {
+                    form = form + "<p>Email " + i + " name</p><br><input type='text' name= accountname"+ i +" value='Email Name'><br><br>";
+                }
+                
+                document.getElementById('form').innerHTML = form;
+                
+                return false;
+            }
+
+            function addpasswords(){
+                console.log("addpasswords()");
+                document.getElementById('addemail').style.display = 'none';
+                document.getElementById('addpasswords').style.display = 'block';
+                return false;
+            } 
+            
+            function createJSON(){
+                document.getElementById('addpasswords').style.display = 'none';
+                var sharedpasswords = document.getElementById('addpasswords').elements.password.value;
+                var accounts = document.getElementById('addemail').elements.accountname1.value;
+                var emails = document.getElementById('addemails').elements.enum.value;
+                console.log(sharedpasswords);
+                console.log(accounts);
+                console.log(emails);
+                
+                jsonoutput = jsonoutput + '{"nodes": [';
+                if (sharepassword === false)
+                {
+                    for (i=1; i <= emails; i++)
+                    {
+                        var name = "accountname" + i;
+                        console.log(name);
+                        var accountname = document.getElementById('addemail').elements[name].value;
+                        if(i !== 1)
+                        {
+                            jsonoutput = jsonoutput + ",";
+                        }
+                        jsonoutput = jsonoutput + '{"id": "n'+ i +'","label": "'+ accountname +'","x": ' + i + ',"y": 0,"size": 10,"type": "star","color": "#f00"}';
+                    }
+                    jsonoutput = jsonoutput + '],"edges": [';
+                    for (i=1; i < emails; i++)
+                    {
+                        if(i !== 1)
+                        {
+                            jsonoutput = jsonoutput + ",";
+                        }
+                        jsonoutput = jsonoutput + '{"id": "e'+ i +'","source": "n'+ i +'","target": "n'+ (i+1) +'","type": "arrow","color": "#FF0000","label": "Option '+ i +'","size": 2}';
+                    }
+                    jsonoutput = jsonoutput + ']}';
+                    //console.log('{"nodes": [{"id": "n0","label": "Account","x": 0,"y": 0,"size": 10,"type": "star","color": "#f00"}],"edges": [{"id": "e0","source": "n1","target": "n0","type": "arrow","color": "#FF0000","label": "Option 1","size": 2}]}');
+                    //console.log(jsonoutput);
+                    localStorage.setItem("jsongraph", jsonoutput);
+                    console.log(localStorage.getItem("jsongraph"));
+                }
+                window.location.href = "map.html";
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Add Your Email Accounts</h1>
+        <br>
+        <p>Firstly lets add your email accounts</p>
+        <br>
+        <form id="addemails">
+            How Many Email Accounts do you have?
+            <br><input type="number" name="enum" value=1><br><br>
+            <button name="data" type="button" onclick="addemails()">Submit</button>
+        </form><br> 
+        
+        <form id="addemail">
+            <div id="form">
+            </div>
+            <button name="data" type="button" onclick="addpasswords()">Submit</button>
+        </form><br>
+        
+        <form id="addpasswords">
+            Do any of the accounts share passwords?
+            <br>
+            <input type="radio" name="password" value="yes" checked> Yes<br>
+            <input type="radio" name="password" value="no"> No<br>
+            <button name="data" type="button" onclick="createJSON()">Submit</button>
+        </form><br>
+        
+        <a href="map.html" class="btn btn-default">Go to Map</a>
+    </body>
+</html>
