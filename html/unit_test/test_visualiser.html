@@ -1,0 +1,31 @@
+<html>
+<head>
+    <title>Test Visualiser Class</title>
+ 
+    <script type="text/javascript" src="../jsunit/app/jsUnitCore.js"></script>
+    <script type="text/javascript" src="../src/visualiser.js"></script>
+ 
+</head>
+<body>
+<script type="text/javascript">
+    var test;
+    
+    function setUp() {
+        test = new Graph();
+    }
+ 
+    function tearDown() {
+        // anything to cleanup after running a testcase
+    }
+ 
+    function testAddEmail() {
+        assertEquals("", "Gmail", test.addEmail("Gmail"));
+    }
+    
+    function testAddPassword() {
+        assertEquals("", "Password", test.addPassword("Password"));
+    }
+ 
+</script>
+</body>
+</html>
