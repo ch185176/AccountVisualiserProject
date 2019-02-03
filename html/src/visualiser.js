@@ -265,13 +265,13 @@ class Graph {
         return true;
     }
 
-    deleteNode(){
+    deleteNode(name){
         
         return true;
 
     }
 
-    deleteLink(){
+    deleteLink(start, end){
         
         return true;
 
