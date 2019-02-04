@@ -4,12 +4,18 @@
 describe("Adding and Removing Nodes", function() {
     var test = new Graph();
     
-    it("It adds an email called name", function() {
-        expect(test.addEmail("name")).toBe("name");
+    it("It adds an email called name with node id of 1", function() {
+        var result = test.addEmail("name");
+        
+        expect(result.id).toBe(1);
+        expect(result.name).toBe("name");
     });
     
-    it("It adds a password called name", function() {
-        expect(test.addPassword("name")).toBe("name");
+    it("It adds a password called name with node id of 2", function() {
+        var result = test.addPassword("name");
+        
+        expect(result.id).toBe(2);
+        expect(result.name).toBe("name");
     });
     
     it("Removes a password with id of 2", function() {

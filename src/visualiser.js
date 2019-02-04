@@ -27,7 +27,21 @@ class Graph {
         this.nodeInfoNeeded = "none";
         this.nodeLinkA = [];
         this.nodeLinkB = [];
-    }             
+    } 
+    
+    addNode(name, type)
+    {
+        var account = {
+            "id": this.currentNodeID,
+            "x_axis":this.currentEmailPOS,
+            "y_axis":(this.height*0.2),
+            "type": type,
+            "name":name,
+            "color":"red"
+        };
+        
+        this.Accounts.push(account);
+    }
 
     // add account to left hand side of the graph 
     addEmail(name) 
@@ -60,7 +74,7 @@ class Graph {
         this.currentNodeID++;
         this.currentEmailPOS = this.currentEmailPOS + 120;
         
-        return name;
+        return account;
     } 
 
     // add vertex to the right hand side of the graph
@@ -94,7 +108,7 @@ class Graph {
         this.currentNodeID++;
         this.currentPasswordPOS = this.currentPasswordPOS + 120;
         
-        return name;
+        return account;
     }
 
     // add edge to the graph 
