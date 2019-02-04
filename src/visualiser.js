@@ -265,15 +265,21 @@ class Graph {
         return true;
     }
 
-    deleteNode(name){
+    deleteNode(id){
         
-        return true;
+        return false;
+
+    }
+    
+    modifyNode(id, email){
+        
+        return false;
 
     }
 
     deleteLink(start, end){
         
-        return true;
+        return false;
 
     }
 
