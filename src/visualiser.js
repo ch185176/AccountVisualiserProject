@@ -48,16 +48,19 @@ class Graph {
     addNode(name, type)
     {
         var xpos;
+        var ypos;
         var color;
         
-        if (type == "email")
+        if (type === "email")
         {
             xpos = this.currentEmailPOS;
+            ypos = (this.height*0.2);
             color = "blue";
             this.currentEmailPOS = this.currentEmailPOS + 120;
-        } else if (type == "password")
+        } else if (type === "password")
         {
             xpos = this.currentPasswordPOS;
+            ypos = (this.height*0.7);
             color = "red";
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         }
@@ -65,7 +68,7 @@ class Graph {
         var account = {
             "id": this.currentNodeID,
             "x_axis":xpos,
-            "y_axis":(this.height*0.2),
+            "y_axis":ypos,
             "type": type,
             "name": name,
             "color":color
@@ -74,74 +77,6 @@ class Graph {
         this.currentNodeID++;
         
         this.Accounts.push(account);
-        return account;
-    }
-
-    // add account to left hand side of the graph 
-    addEmail(name) 
-    { 
-        var account = {
-            "id": this.currentNodeID,
-            "x_axis":this.currentEmailPOS,
-            "y_axis":(this.height*0.2),
-            "name":name,
-            "color":"red"
-        };
-
-        this.Accounts.push(account);
-
-        this.currentNode = {
-            "id": this.currentNodeID,
-            "label": name,
-            "x": this.currentEmailLevel,
-            "y": 1,
-            "size": 10,
-            "type": "star",
-            "color": "#f00"
-        };
-
-        this.Nodes.push(this.currentNode);
-        this.JSON.nodes = (this.Nodes);
-        this.currentNode = {};
-
-        this.currentEmailLevel = this.currentEmailLevel+1;
-        this.currentNodeID++;
-        this.currentEmailPOS = this.currentEmailPOS + 120;
-        
-        return account;
-    } 
-
-    // add vertex to the right hand side of the graph
-    addPassword(name) 
-    { 
-        var account = {
-            "id": this.currentNodeID,
-            "x_axis":this.currentPasswordPOS,
-            "y_axis":(this.height*0.7),
-            "name":name,
-            "color":"blue"
-        };
-
-        this.Accounts.push(account);
-        this.Passwords.push(account);
-
-        this.currentPassword = {
-            "id": this.currentNodeID,
-            "label": name,
-            "x": this.currentPasswordLevel,
-            "y": 2,
-            "size": 10,
-            "color": "#f00"
-        };
-
-        this.Nodes.push(this.currentPassword);
-        this.JSON.nodes = (this.Nodes);
-        this.currentPassword = {};
-
-        this.currentPasswordLevel = this.currentPasswordLevel+1; 
-        this.currentNodeID++;
-        this.currentPasswordPOS = this.currentPasswordPOS + 120;
-        
         return account;
     }
 
@@ -158,36 +93,34 @@ class Graph {
      */
     addLink(sourceID, targetID, x1, y1, x2, y2) 
     { 
+        var linkinfo = {
+            "id": this.currentEdgeID,
+            "label": ""
+        };
+        
         var link1 = {
             "SourceID": sourceID,
-            "x": x1 + 40,
-            "y": y1 + 20
+            "x": x1 + 7.5,
+            "y": y1 + 10
         };
 
         var link2 = {
             "TargetID": targetID,
-            "x": x2 + 40,
-            "y": y2 + 20
+            "x": x2 + 7.5,
+            "y": y2 + 10
         };
 
         var Link = [];
+        Link.push(linkinfo);
         Link.push(link1);
         Link.push(link2);
         this.Links.push(Link);
-
-        this.currentEdge = {
-            "id": this.currentEdgeID,
-            "source": sourceID,
-            "target": targetID,
-            "type": "arrow",
-            "color": "#FF0000",
-            "label": "",
-            "size": 2
-        };
-
-        this.Edges.push(this.currentEdge);
-        this.JSON.nodes = (this.Edges);
-        this.currentEdge = {};
+        
+        var LinkSanitised = [];
+        LinkSanitised.push(link1);
+        LinkSanitised.push(link2);
+        
+        this.Edges.push(LinkSanitised);
 
         this.currentEdgeID++;
         
@@ -224,10 +157,13 @@ class Graph {
         return this.Accounts[pos];
     }
 
-    deleteLink(sourceID, targetID)
+    deleteLink(linkID)
     {
-
-        return false;
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
+        this.Links.splice(pos);
+        this.Edges.splice(pos);
+        
+        return this.Links[pos];
     }
 
     
@@ -250,7 +186,7 @@ class Graph {
 
         var data = this.Accounts;
 
-        var edgeData = this.Links;
+        var edgeData = this.Edges;
 
         var svgContainer = d3.select("#graph")
             .append("svg")
@@ -276,14 +212,18 @@ class Graph {
 
                 console.log(edgeData[i]);  
             }
-
-        var rectangle = svgContainer.selectAll("rect")
+        
+        var circle = svgContainer.selectAll("circle")
             .data(data)
             .enter()
-            .append("rect");
+            .append('circle');
 
+        var node = svgContainer.selectAll("node")
+            .data(data)
+            .enter()
+            .append('svg:foreignObject');
 
-        rectangle.on('click', datum => {
+        node.on('click', datum => {
             this.nodeClicked=datum; // the datum for the clicked circle
             if (this.nodeInfoNeeded === "end")
             {
@@ -305,15 +245,20 @@ class Graph {
 
             this.nodeClicked = {};
         });
-
-        var rectangleAttributes = rectangle
+     
+        var circleAttributes = circle
+            .attr("cx", function (d) { return d.x_axis + 7.5; })
+            .attr("cy", function (d) { return d.y_axis + 11.5; })
+            .attr("r", '12px')
+            .style("fill", function(d) { return d.color; });
+        
+        var nodeAttributes = node
             .attr("x", function (d) { return d.x_axis; })
             .attr("y", function (d) { return d.y_axis; })
-            .attr("width", 80)
-            .attr("height", 40)
-            .attr("rx", 6)
-            .attr("ry", 6)
-            .style("fill", function(d) { return d.color; });
+            .attr('fill', 'white')
+            .attr('height', '20px')
+            .attr('width', '15px')
+            .html('<i class="fab fa-google"></i>');
 
         //Add the SVG Text Element to the svgContainer
         var text = svgContainer.selectAll("text")
@@ -323,12 +268,12 @@ class Graph {
 
         //Add SVG Text Element Attributes
         var textLabels = text
-                         .attr("x", function(d) { return d.x_axis + 20; })
-                         .attr("y", function(d) { return d.y_axis + 25; })
+                         .attr("x", function(d) { return d.x_axis; })
+                         .attr("y", function(d) { return d.y_axis - 7.5; })
                          .text( function (d) { return d.name; })
                          .attr("font-family", "sans-serif")
                          .attr("font-size", "10px")
-                         .attr("fill", "white");                
+                         .attr("fill", "black");                
     }
 
     startLink()
@@ -368,7 +313,7 @@ class Graph {
 
     addPasswordNode(){
         var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addPassword(name, "password");
+        this.addNode(name, "password");
         this.refreshGraph();
         
         return true;
