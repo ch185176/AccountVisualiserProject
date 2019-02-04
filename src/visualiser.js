@@ -1,6 +1,15 @@
-// create a graph class 
+/**
+ * visualiser.js backend for Account Visualiser App
+ * 
+ * @author Craig Hutcheon
+ */
 class Graph { 
-    // defining variables
+    
+    /**
+     * Constructor
+     * 
+     * @return {Graph}
+     */
     constructor() 
     { 
         this.width = 1000;
@@ -29,18 +38,43 @@ class Graph {
         this.nodeLinkB = [];
     } 
     
+    /**
+     * Adds Node to  graph of specified type
+     * 
+     * @param {type} name
+     * @param {type} type
+     * @return {Graph.addNode.account}
+     */
     addNode(name, type)
     {
+        var xpos;
+        var color;
+        
+        if (type == "email")
+        {
+            xpos = this.currentEmailPOS;
+            color = "blue";
+            this.currentEmailPOS = this.currentEmailPOS + 120;
+        } else if (type == "password")
+        {
+            xpos = this.currentPasswordPOS;
+            color = "red";
+            this.currentPasswordPOS = this.currentPasswordPOS + 120;
+        }
+        
         var account = {
             "id": this.currentNodeID,
-            "x_axis":this.currentEmailPOS,
+            "x_axis":xpos,
             "y_axis":(this.height*0.2),
             "type": type,
-            "name":name,
-            "color":"red"
+            "name": name,
+            "color":color
         };
         
+        this.currentNodeID++;
+        
         this.Accounts.push(account);
+        return account;
     }
 
     // add account to left hand side of the graph 
@@ -111,15 +145,27 @@ class Graph {
         return account;
     }
 
-    // add edge to the graph 
+    /**
+     * Adds Link to Graph
+     * 
+     * @param {type} sourceID
+     * @param {type} targetID
+     * @param {type} x1
+     * @param {type} y1
+     * @param {type} x2
+     * @param {type} y2
+     * @return {Array|Graph.addLink.Link}
+     */
     addLink(sourceID, targetID, x1, y1, x2, y2) 
     { 
         var link1 = {
+            "SourceID": sourceID,
             "x": x1 + 40,
             "y": y1 + 20
         };
 
         var link2 = {
+            "TargetID": targetID,
             "x": x2 + 40,
             "y": y2 + 20
         };
@@ -145,10 +191,59 @@ class Graph {
 
         this.currentEdgeID++;
         
-        return true;
+        return Link;
+    }
+    
+    /**
+     * Deletes Node on Graph
+     * 
+     * @param {type} id
+     * @return {Array}
+     */
+    deleteNode(id)
+    {
+        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        this.Accounts.splice(pos);
+        
+        return this.Accounts[pos];
+    }
+    
+    /**
+     * Modifies Node Label
+     * 
+     * @param {type} id
+     * @param {type} newlabel
+     * @return {Array}
+     */
+    modifyNode(id, newlabel)
+    {  
+        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        
+        this.Accounts[pos].name = newlabel;
+        
+        return this.Accounts[pos];
     }
 
-    // Prints the vertex and adjacency list 
+    deleteLink(sourceID, targetID)
+    {
+
+        return false;
+    }
+
+    
+    
+    /*
+     * 
+     * HTML Specific Funtions
+     * 
+     * 
+     */ 
+
+    
+    /**
+     * 
+     * @return {undefined}
+     */
     drawGraph() 
     { 
         var height = 400;
@@ -265,7 +360,7 @@ class Graph {
 
     addEmailNode(){
         var name = document.getElementById('addemail').elements.emailname.value;
-        this.addEmail(name);
+        this.addNode(name, "email");
         this.refreshGraph();
         
         return true;
@@ -273,28 +368,10 @@ class Graph {
 
     addPasswordNode(){
         var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addPassword(name);
+        this.addPassword(name, "password");
         this.refreshGraph();
         
         return true;
-    }
-
-    deleteNode(id){
-        
-        return false;
-
-    }
-    
-    modifyNode(id, email){
-        
-        return false;
-
-    }
-
-    deleteLink(start, end){
-        
-        return false;
-
     }
 
     refreshGraph()
