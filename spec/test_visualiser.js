@@ -12,26 +12,26 @@
 describe("Adding and Removing Nodes", function() {
     var test = new Graph();
     
-    it("It adds an email called 'name' with node id of 1", function() {
+    it("It adds an email called 'name' with node ID of 1", function() {
         var result = test.addNode("name", "email");
         
         expect(result.id).toBe(1);
         expect(result.name).toBe("name");
     });
     
-    it("It adds a password called 'name' with node id of 2", function() {
+    it("It adds a password called 'name' with node ID of 2", function() {
         var result = test.addNode("name", "password");
         
         expect(result.id).toBe(2);
         expect(result.name).toBe("name");
     });
     
-    it("Removes a password with id of 2", function() {
+    it("Removes a password with ID of 2", function() {
         var id = 2;
         expect(test.deleteNode(id)).toBe(undefined);
     });
     
-    it("Changes an email's label with id of 1 to 'email'", function() {
+    it("Changes an email's label with ID of 1 to 'email'", function() {
         var id = 1;
         
         modifiedNode = test.modifyNode(id, "email");
@@ -57,11 +57,20 @@ describe("Adding and Removing Edges", function() {
         
         var link = test.addLink(node1.id, node2.id, node1.x_axis, node1.y_axis, node2.x_axis, node2.y_axis);
         
-        expect(link[0].x).toBe(node1.x_axis + 40);
-        expect(link[1].y).toBe(node2.y_axis+ 20);
-        expect(link[0].SourceID).toBe(node1.id);
-        expect(link[1].TargetID).toBe(node2.id);
+        expect(link[1].x).toBe(node1.x_axis + 7.5);
+        expect(link[2].y).toBe(node2.y_axis + 10);
+        expect(link[1].SourceID).toBe(node1.id);
+        expect(link[2].TargetID).toBe(node2.id);
     });
+    
+    it("Removes an edge given an edge ID", function() {
+        var id = 1;
+        
+        var link = test.deleteLink(id);
+        
+        expect(link).toBe(undefined);
+    });
+    
 });
 
 
