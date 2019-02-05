@@ -205,9 +205,10 @@ class Graph {
         for (var i=0; i < edgeData.length; i++) 
             {
                 svgContainer.append("path")
-                    .attr("class", "line")
+                    .attr("class", "path")
                     .datum(edgeData[i])
                     .attr("d", line)
+                    .attr('marker-end', 'url(#arrowhead)')
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
 
