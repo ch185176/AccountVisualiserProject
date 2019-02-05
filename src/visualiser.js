@@ -101,14 +101,14 @@ class Graph {
         
         var link1 = {
             "SourceID": sourceID,
-            "x": x1 + 7.5,
-            "y": y1 + 10
+            "x": x1 + 10,
+            "y": y1
         };
 
         var link2 = {
             "TargetID": targetID,
-            "x": x2 + 7.5,
-            "y": y2 + 10
+            "x": x2 + 10,
+            "y": y2
         };
 
         var Link = [];
@@ -258,13 +258,13 @@ class Graph {
             .attr("y", function (d) { return d.y_axis; })
             .attr("class", "fa")  // Give it the font-awesome class
             .attr("fill", "white")
-            .text(function(d) { return '\uf118' });      // Specify your icon in unicode
+            .text(function(d) { return '\uf118'; });      // Specify your icon in unicode
 
         //Add the SVG Text Element to the svgContainer
         var text = svgContainer.selectAll("text")
-                                .data(data)
-                                .enter()
-                                .append("text");
+            .data(data)
+            .enter()
+            .append("text");
 
         //Add SVG Text Element Attributes
         var textLabels = text
