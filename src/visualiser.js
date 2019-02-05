@@ -224,6 +224,12 @@ class Graph {
             .enter()
             .append('text');
 
+        //Add the SVG Text Element to the svgContainer
+        var label = svgContainer.selectAll("label")
+            .data(data)
+            .enter()
+            .append("text");
+       
         node.on('click', datum => {
             this.nodeClicked=datum; // the datum for the clicked circle
             if (this.nodeInfoNeeded === "end")
@@ -248,7 +254,7 @@ class Graph {
         });
      
         var circleAttributes = circle
-            .attr("cx", function (d) { return d.x_axis + 9; })
+            .attr("cx", function (d) { return d.x_axis + 8; })
             .attr("cy", function (d) { return d.y_axis - 6; })
             .attr("r", '12px')
             .style("fill", function(d) { return d.color; });
@@ -256,21 +262,62 @@ class Graph {
         var nodeAttributes = node
             .attr("x", function (d) { return d.x_axis; })
             .attr("y", function (d) { return d.y_axis; })
-            .attr("class", "fa")  // Give it the font-awesome class
+            .attr("class", function(d) 
+                { 
+                    var type = d.icon;
+                    if (type === "google")
+                    {
+                        return "fab"; 
+                    }
+                    else if (type === "outlook")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "yahoo")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "password")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "default")
+                    {
+                        return "far";
+                    }
+                })  // Give it the font-awesome class
             .attr("fill", "white")
-            .text(function(d) { return '\uf118'; });      // Specify your icon in unicode
+            .text(function(d) 
+                { 
+                    var type = d.icon;
+                    if (type === "google")
+                    {
+                        return '\uf1a0'; 
+                    }
+                    else if (type === "outlook")
+                    {
+                        return '\uf17a';
+                    }
+                    else if (type === "yahoo")
+                    {
+                        return '\uf19e';
+                    }
+                    else if (type === "password")
+                    {
+                        return '\uf084';
+                    }
+                    else if (type === "default")
+                    {
+                        return '\uf2b6';
+                    }
+                });      // Specify your icon in unicode
 
-        //Add the SVG Text Element to the svgContainer
-        var text = svgContainer.selectAll("text")
-            .data(data)
-            .enter()
-            .append("text");
 
         //Add SVG Text Element Attributes
-        var textLabels = text
+        var textLabels = label
                          .attr("x", function(d) { return d.x_axis; })
-                         .attr("y", function(d) { return d.y_axis; })
-                         .text( function (d) { return d.name; })
+                         .attr("y", function(d) { return d.y_axis - 20; })
+                         .text( function (d) { console.log(d.name); return d.name; })
                          .attr("font-family", "sans-serif")
                          .attr("font-size", "10px")
                          .attr("fill", "black");                
@@ -314,7 +361,7 @@ class Graph {
 
     addPasswordNode(){
         var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addNode(name, "password");
+        this.addNode(name, "password", "password");
         this.refreshGraph();
         
         return true;
