@@ -54,8 +54,33 @@ and open the template in the editor.
                     <p class="text-black-50">Use This form to add an Email address<p>
                     <form id="addemail">
                         <div class="form-group">
-                        <label for="emailname">Email Name</label>
-                        <input type="text" name="emailname" class="form-control" placeholder="ie. gmail">
+                            <input type="radio" name="icon" id="radio1" value="\uf2b6" checked>        
+                            <label for="radio1">
+                                <span class="fa-stack">
+                                    <i class="far fa-envelope-open fa-stack-1x"></i>
+                                </span>
+                            </label>
+                            <input type="radio" name="icon" id="radio2" value="\uf1a0">        
+                            <label for="radio2">
+                                <span class="fa-stack">
+                                    <i class="fab fa-google fa-stack-1x"></i>
+                                </span>
+                            </label>
+                            <input type="radio" name="icon" id="radio3" value="\uf17a">     
+                            <label for="radio3">
+                                <span class="fa-stack">
+                                    <i class="fab fa-windows fa-stack-1x"></i>
+                                </span>
+                            </label>
+                            <input type="radio" name="icon" id="radio4" value="\uf19e">     
+                            <label for="radio4">
+                                <span class="fa-stack">
+                                    <i class="fab fa-yahoo fa-stack-1x"></i>
+                                </span>
+                            </label><br>
+                        
+                        <label for="emailname">Email Label</label>
+                        <input type="text" name="emailname" class="form-control" placeholder="ie. home">
                         </div>
                         <button name="data" type="button" onclick="G.addEmailNode()" class="btn btn-primary">Submit Email</button>
                     </form><br>

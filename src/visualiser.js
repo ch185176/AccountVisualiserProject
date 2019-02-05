@@ -45,7 +45,7 @@ class Graph {
      * @param {type} type
      * @return {Graph.addNode.account}
      */
-    addNode(name, type)
+    addNode(name, type, icon)
     {
         var xpos;
         var ypos;
@@ -71,7 +71,8 @@ class Graph {
             "y_axis":ypos,
             "type": type,
             "name": name,
-            "color":color
+            "color":color,
+            "icon":icon
         };
         
         this.currentNodeID++;
@@ -221,7 +222,7 @@ class Graph {
         var node = svgContainer.selectAll("node")
             .data(data)
             .enter()
-            .append('svg:foreignObject');
+            .append('text');
 
         node.on('click', datum => {
             this.nodeClicked=datum; // the datum for the clicked circle
@@ -247,18 +248,17 @@ class Graph {
         });
      
         var circleAttributes = circle
-            .attr("cx", function (d) { return d.x_axis + 7.5; })
-            .attr("cy", function (d) { return d.y_axis + 11.5; })
+            .attr("cx", function (d) { return d.x_axis + 9; })
+            .attr("cy", function (d) { return d.y_axis - 6; })
             .attr("r", '12px')
             .style("fill", function(d) { return d.color; });
         
         var nodeAttributes = node
             .attr("x", function (d) { return d.x_axis; })
             .attr("y", function (d) { return d.y_axis; })
-            .attr('fill', 'white')
-            .attr('height', '20px')
-            .attr('width', '15px')
-            .html('<i class="fab fa-google"></i>');
+            .attr("class", "fa")  // Give it the font-awesome class
+            .attr("fill", "white")
+            .text(function(d) { return '\uf118' });      // Specify your icon in unicode
 
         //Add the SVG Text Element to the svgContainer
         var text = svgContainer.selectAll("text")
@@ -269,7 +269,7 @@ class Graph {
         //Add SVG Text Element Attributes
         var textLabels = text
                          .attr("x", function(d) { return d.x_axis; })
-                         .attr("y", function(d) { return d.y_axis - 7.5; })
+                         .attr("y", function(d) { return d.y_axis; })
                          .text( function (d) { return d.name; })
                          .attr("font-family", "sans-serif")
                          .attr("font-size", "10px")
@@ -305,7 +305,8 @@ class Graph {
 
     addEmailNode(){
         var name = document.getElementById('addemail').elements.emailname.value;
-        this.addNode(name, "email");
+        var icon = document.getElementById('addemail').elements.icon.value;
+        this.addNode(name, "email", icon);
         this.refreshGraph();
         
         return true;

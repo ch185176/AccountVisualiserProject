@@ -13,14 +13,14 @@ describe("Adding and Removing Nodes", function() {
     var test = new Graph();
     
     it("It adds an email called 'name' with node ID of 1", function() {
-        var result = test.addNode("name", "email");
+        var result = test.addNode("name", "email", "test");
         
         expect(result.id).toBe(1);
         expect(result.name).toBe("name");
     });
     
     it("It adds a password called 'name' with node ID of 2", function() {
-        var result = test.addNode("name", "password");
+        var result = test.addNode("name", "password", "test");
         
         expect(result.id).toBe(2);
         expect(result.name).toBe("name");
@@ -52,8 +52,8 @@ describe("Adding and Removing Edges", function() {
     var test = new Graph();
     
     it("It adds an edge from a target node to a destination node", function() {
-        var node1 = test.addNode("name", "email");
-        var node2 = test.addNode("name", "password");
+        var node1 = test.addNode("name", "email", "test");
+        var node2 = test.addNode("name", "password", "test");
         
         var link = test.addLink(node1.id, node2.id, node1.x_axis, node1.y_axis, node2.x_axis, node2.y_axis);
         
