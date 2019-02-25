@@ -45,7 +45,7 @@ class Graph {
      * @param {type} type
      * @return {Graph.addNode.account}
      */
-    addNode(name, type, icon)
+    addNode(name, type, icon, x, y, clickToAdd)
     {
         var xpos;
         var ypos;
@@ -53,14 +53,24 @@ class Graph {
         
         if (type === "email")
         {
-            xpos = this.currentEmailPOS;
-            ypos = (this.height*0.2);
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.2);
+            }
             color = "blue";
             this.currentEmailPOS = this.currentEmailPOS + 120;
         } else if (type === "password")
         {
-            xpos = this.currentPasswordPOS;
-            ypos = (this.height*0.7);
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentPasswordPOS;
+                ypos = (this.height*0.7);
+            }
             color = "red";
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         }
@@ -191,12 +201,24 @@ class Graph {
 
         var svgContainer = d3.select("#graph")
             .append("svg")
+            .on('click', ()=> this.click())
             .attr("width", this.width)
             .attr("height", this.height)
+            /*
             .call(d3.zoom().on("zoom", function () {
                 svgContainer.attr("transform", d3.event.transform);
             }))
+            */
             .append("g");
+
+        // Define drag beavior
+        var drag = d3.drag().on("drag", function(d)
+                {
+                    var x = d3.event.x;
+                    var y = d3.event.y;
+                    d3.select(this).attr("transform", "translate(" + x + "," + y + ")");
+                }
+            );
 
         var line = d3.line()
             .x(function (d) { return d.x; })
@@ -224,35 +246,13 @@ class Graph {
             .data(data)
             .enter()
             .append('text');
+            
 
         //Add the SVG Text Element to the svgContainer
         var label = svgContainer.selectAll("label")
             .data(data)
             .enter()
             .append("text");
-       
-        node.on('click', datum => {
-            this.nodeClicked=datum; // the datum for the clicked circle
-            if (this.nodeInfoNeeded === "end")
-            {
-                var ID = this.nodeClicked.id;
-                console.log(ID);
-                var x = this.nodeClicked.x_axis;
-                var y = this.nodeClicked.y_axis;
-
-                this.getSecondNodeInfo(ID,x,y);
-            }
-            if (this.nodeInfoNeeded === "start")
-            {
-                var ID = this.nodeClicked.id;
-                var x = this.nodeClicked.x_axis;
-                var y = this.nodeClicked.y_axis;
-
-                this.getFirstNodeInfo(ID,x,y);                           
-            }
-
-            this.nodeClicked = {};
-        });
      
         var circleAttributes = circle
             .attr("cx", function (d) { return d.x_axis + 8; })
@@ -323,7 +323,35 @@ class Graph {
                          .attr("font-size", "10px")
                          .attr("fill", "black");                
     }
+    
+    click()
+    {
+        // Ignore the click event if it was suppressed
+        if (d3.event.defaultPrevented) return;
 
+        // Extract the click location\    
+        var point = d3.mouse(d3.event.currentTarget), 
+        px = {x: point[0]},
+        py = {y: point[1]};
+        console.log(px.x);
+        console.log(py.y);
+        if(document.getElementById('type').elements.type.value === "email")
+        {
+            var name = document.getElementById('addemail').elements.emailname.value;
+            var icon = document.getElementById('addemail').elements.icon.value;
+            var type = "email";
+        }else if (document.getElementById('type').elements.type.value === "password")
+        {
+            var name = document.getElementById('addpassword').elements.passwordname.value;
+            var icon = "password";
+            var type = "password";
+        }
+        this.addNode(name, type, icon, px.x, py.y, true);
+        this.refreshGraph();
+        
+        return true;
+    }
+    
     startLink()
     {
         this.nodeInfoNeeded = "start";
@@ -354,7 +382,7 @@ class Graph {
     addEmailNode(){
         var name = document.getElementById('addemail').elements.emailname.value;
         var icon = document.getElementById('addemail').elements.icon.value;
-        this.addNode(name, "email", icon);
+        this.addNode(name, "email", icon, 0, 0, false);
         this.refreshGraph();
         
         return true;
@@ -362,7 +390,7 @@ class Graph {
 
     addPasswordNode(){
         var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addNode(name, "password", "password");
+        this.addNode(name, "password", "password", 0, 0, false);
         this.refreshGraph();
         
         return true;

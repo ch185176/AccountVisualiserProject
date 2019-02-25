@@ -43,66 +43,84 @@ and open the template in the editor.
         <div class="container">
             <!-- ACCOUNT VISUALISER DIV -->
             <div class="row">
-                <div class="col" id="graph" style="border:solid black 2px"></div>
+                <div class="col-md-10" id="graph" style="border:solid black 2px"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>
                     G.drawGraph();
                 </script>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h2>Emails and Passwords</h2>
-                    <p class="text-black-50">Use This form to add an Email address<p>
-                    <form id="addemail">
-                        <div class="form-group">
-                            <input type="radio" name="icon" id="radio1" value="default" checked>        
-                            <label for="radio1">
-                                <span class="fa-stack">
-                                    <i class="far fa-envelope-open fa-stack-1x"></i>
-                                </span>
-                            </label>
-                            <input type="radio" name="icon" id="radio2" value="google">        
-                            <label for="radio2">
-                                <span class="fa-stack">
-                                    <i class="fab fa-google fa-stack-1x"></i>
-                                </span>
-                            </label>
-                            <input type="radio" name="icon" id="radio3" value="outlook">     
-                            <label for="radio3">
-                                <span class="fa-stack">
-                                    <i class="fab fa-windows fa-stack-1x"></i>
-                                </span>
-                            </label>
-                            <input type="radio" name="icon" id="radio4" value="yahoo">     
-                            <label for="radio4">
-                                <span class="fa-stack">
-                                    <i class="fab fa-yahoo fa-stack-1x"></i>
-                                </span>
-                            </label><br>
-                        
-                        <label for="emailname">Email Label</label>
-                        <input type="text" name="emailname" class="form-control" placeholder="ie. home">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <h2>Emails and Passwords</h2>
+                            <form id="type">
+                                <div class="form-group">
+                                    <input type="radio" name="type" id="radio1" value="email" checked>        
+                                    <label for="radio1">add email</label>
+                                    <input type="radio" name="type" id="radio2" value="password">        
+                                    <label for="radio2">add password</label>
+                                </div>
+                            </form>
                         </div>
-                        <button name="data" type="button" onclick="G.addEmailNode()" class="btn btn-primary">Submit Email</button>
-                    </form><br>
-                    <br>
-                    <p class="text-black-50">Use This form to add a Password<p>
-                    <form id="addpassword">
-                        <div class="form-group">
-                        <label for="passwordname">Password Name</label>
-                        <input type="text" name="passwordname" class="form-control" placeholder="ie. 1">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-black-50">Use This form to add an Email address<p>
+                            <form id="addemail">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="default" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="far fa-envelope-open fa-stack-1x"></i>
+                                        </span>
+                                    </label>
+                                    <input type="radio" name="icon" id="radio2" value="google">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-google fa-stack-1x"></i>
+                                        </span>
+                                    </label>
+                                    <input type="radio" name="icon" id="radio3" value="outlook">     
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-windows fa-stack-1x"></i>
+                                        </span>
+                                    </label>
+                                    <input type="radio" name="icon" id="radio4" value="yahoo">     
+                                    <label for="radio4">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-yahoo fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+
+                                <label for="emailname">Email Label</label>
+                                <input type="text" name="emailname" class="form-control" placeholder="ie. home">
+                                </div>
+                            </form>
                         </div>
-                        <button name="data" type="button" onclick="G.addPasswordNode()" class="btn btn-primary">Submit Password</button>
-                    </form><br>
-                </div>
-                <div class="col-md-6">
-                <h2>Links</h2>
-                <p class="text-black-50">Click this button to start the link process</p>
-                <div class="form-group">
-                    <label for="data">Click to Start</label><br>
-                    <button name="data" type="button" onclick="G.startLink()" class="btn btn-primary">Add Link</button>
-                </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <br>
+                            <p class="text-black-50">Use This form to add a Password<p>
+                            <form id="addpassword">
+                                <div class="form-group">
+                                <label for="passwordname">Password Name</label>
+                                <input type="text" name="passwordname" class="form-control" placeholder="ie. 1">
+                                </div>
+                            </form><br>
+                        </div>
+                    </div>
+                         <div class="row">
+                             <div class="col">
+                                <h2>Links</h2>
+                                <p class="text-black-50">Click this button to start the link process</p>
+                                <div class="form-group">
+                                    <label for="data">Click to Start</label><br>
+                                    <button name="data" type="button" onclick="G.startLink()" class="btn btn-primary">Add Link</button>
+                                </div>
+                             </div>
+                    </div>
                 </div>
             </div>
         </div>

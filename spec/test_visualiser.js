@@ -12,15 +12,15 @@
 describe("Adding and Removing Nodes", function() {
     var test = new Graph();
     
-    it("It adds an email called 'name' with node ID of 1", function() {
-        var result = test.addNode("name", "email", "test");
+    it("It adds an email called 'name' with node ID of 1, to position x=1 y=1", function() {
+        var result = test.addNode("name", "email", "test", 1, 1, true);
         
         expect(result.id).toBe(1);
         expect(result.name).toBe("name");
     });
     
-    it("It adds a password called 'name' with node ID of 2", function() {
-        var result = test.addNode("name", "password", "test");
+    it("It adds a password called 'name' with node ID of 2, to position x=2 y=1", function() {
+        var result = test.addNode("name", "password", "test", 2, 2, true);
         
         expect(result.id).toBe(2);
         expect(result.name).toBe("name");
