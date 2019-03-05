@@ -12,13 +12,26 @@ and open the template in the editor.
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src = "https://d3js.org/d3-shape.v1.min.js"></script>
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <script src="js/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/jquery-menu.js"></script>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css">
+        <script src="js/jquery-ui.min.js"></script>
+        <link href="js/jquery-ui.min.css" rel="stylesheet">
+        <link href="js/jquery-ui.structure.min.css" rel="stylesheet">
+        <link href="js/jquery-ui.theme.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/brands.css" integrity="sha384-BKw0P+CQz9xmby+uplDwp82Py8x1xtYPK3ORn/ZSoe6Dk3ETP59WCDnX+fI1XCKK" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/fontawesome.css" integrity="sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+" crossorigin="anonymous">
         <link href="css/mdb.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/jquery-menu.css" />
         <script  src="src/visualiser.js"> </script>
+        
+        <script>
+            $( function() {
+              $( "#accordion" ).accordion();
+            } );
+        </script>
+                    
     </head>
     <body>
         <nav class="navbar navbar-expand-sm justify-content-center" style="background-color:#464646; margin-bottom:10px;">
@@ -41,46 +54,205 @@ and open the template in the editor.
         <div class="container">
             <!-- ACCOUNT VISUALISER DIV -->
             <div class="row">
-                <div class="col" id="graph" style="border:solid black 2px"></div>
+                <div class="col-md-10" id="graph" style="border:solid black 2px"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>
                     G.drawGraph();
                 </script>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <h2>Emails and Passwords</h2>
-                    <p class="text-black-50">Use This form to add an Email address<p>
-                    <form id="addemail">
-                        <div class="form-group">
-                        <label for="emailname">Email Name</label>
-                        <input type="text" name="emailname" class="form-control" placeholder="ie. gmail">
+                <div class="col">
+                   
+                    <div id="accordion">
+                        <h3>Emails</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add an Email address<p>
+                            <form id="addemail">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="default" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="far fa-envelope-open fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="google">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-google fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="outlook">     
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-windows fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio4" value="yahoo">     
+                                    <label for="radio4">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-yahoo fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+
+                                <label for="emailname">Email Label</label>
+                                <input type="text" name="emailname" class="form-control" placeholder="ie. home">
+                                </div>
+                            </form>
                         </div>
-                        <button name="data" type="button" onclick="G.addEmailNode()" class="btn btn-primary">Submit Email</button>
-                    </form><br>
-                    <br>
-                    <p class="text-black-50">Use This form to add a Password<p>
-                    <form id="addpassword">
-                        <div class="form-group">
-                        <label for="passwordname">Password Name</label>
-                        <input type="text" name="passwordname" class="form-control" placeholder="ie. 1">
+                        <h3>Security</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Password<p>
+                            <form id="addpassword">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="password" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="lock">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-unlock-alt"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="swipe">     
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-hand-point-up"></i>
+                                        </span>
+                                    </label><br>
+                                    
+                                <label for="passwordname">Password Name</label>
+                                <input type="text" name="passwordname" class="form-control" placeholder="ie. 1">
+                                </div>
+                            </form>
                         </div>
-                        <button name="data" type="button" onclick="G.addPasswordNode()" class="btn btn-primary">Submit Password</button>
-                    </form><br>
-                </div>
-                <div class="col-md-4">
-                <h2>Links</h2>
-                <p class="text-black-50">Click this button to start the link process</p>
-                <div class="form-group">
-                    <label for="data">Click to Start</label><br>
-                    <button name="data" type="button" onclick="G.startLink()" class="btn btn-primary">Add Link</button>
-                </div>
-                </div>
-                <div class="col-md-4">
-                    <h2>Node Graph</h2>
-                    <p class="text-black-50">Click this button to move to final graph</p>
-                    <a href="" class="btn btn-primary">Go to Node Graph</a>
+                        <h3>Devices</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Device<p>
+                            <form id="adddevice">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="mobile" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-mobile-alt"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="computer">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-desktop"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="laptop">     
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-laptop"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio4" value="tablet">     
+                                    <label for="radio4">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-tablet-alt"></i>
+                                        </span>
+                                    </label><br>
+
+                                <label for="devicename">Device Label</label>
+                                <input type="text" name="devicename" class="form-control" placeholder="ie. iPhone">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Biometrics</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Biometric<p>
+                            <form id="addbio">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="fingerprint" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-fingerprint"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="irus">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="far fa-eye"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="bioname">Label</label>
+                                <input type="text" name="bioname" class="form-control" placeholder="ie. index finger">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Shopping</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Shop<p>
+                            <form id="addshopping">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="amazon" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-amazon"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="cart">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="appstore">        
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-app-store"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="shoppingname">Label</label>
+                                <input type="text" name="shoppingname" class="form-control" placeholder="ie. amazon">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Social Media</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Social Media Profile<p>
+                            <form id="addsocial">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="facebook" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-facebook-square"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="instagram">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-instagram"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="twitter">        
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-twitter-square"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio4" value="social">        
+                                    <label for="radio4">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-user-circle"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="socialname">Label</label>
+                                <input type="text" name="bioname" class="form-control" placeholder="ie. social">
+                                </div>
+                            </form>
+                        </div>
+                    </div>   
                 </div>
             </div>
         </div>
