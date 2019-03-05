@@ -85,6 +85,46 @@ class Graph {
             }
             color = "red";
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
+        } else if (type === "device")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = "yellow";
+        } else if (type === "biometric")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = "pink";
+        } else if (type === "shopping")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = "black";
+        } else if (type === "social")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = "green";
         }
         
         var account = {
@@ -328,11 +368,11 @@ class Graph {
             .on('click', ()=> this.click())
             .attr("width", this.width)
             .attr("height", this.height)
-            /*
+            
             .call(d3.zoom().on("zoom", function () {
                 svgContainer.attr("transform", d3.event.transform);
             }))
-            */
+            
             .append("g");
      
         var defs = svgContainer.append("defs");
@@ -421,6 +461,66 @@ class Graph {
                     {
                         return "fas";
                     }
+                    else if (type === "lock")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "swipe")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "mobile")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "computer")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "laptop")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "tablet")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "fingerprint")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "irus")
+                    {
+                        return "far";
+                    }
+                    else if (type === "amazon")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "cart")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "appstore")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "facebook")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "twitter")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "instagram")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "social")
+                    {
+                        return "fas";
+                    }
                     else if (type === "default")
                     {
                         return "far";
@@ -446,6 +546,66 @@ class Graph {
                     {
                         return '\uf084';
                     }
+                    else if (type === "lock")
+                    {
+                        return '\uf13e';
+                    }
+                    else if (type === "swipe")
+                    {
+                        return '\uf0a6';
+                    }
+                    else if (type === "mobile")
+                    {
+                        return '\uf3cd';
+                    }
+                    else if (type === "computer")
+                    {
+                        return '\uf108';
+                    }
+                    else if (type === "laptop")
+                    {
+                        return '\uf109';
+                    }
+                    else if (type === "tablet")
+                    {
+                        return '\uf3fa';
+                    }
+                    else if (type === "fingerprint")
+                    {
+                        return '\uf577';
+                    }
+                    else if (type === "irus")
+                    {
+                        return '\uf06e';
+                    }
+                    else if (type === "amazon")
+                    {
+                        return '\uf270';
+                    }
+                    else if (type === "cart")
+                    {
+                        return '\uf07a';
+                    }
+                    else if (type === "appstore")
+                    {
+                        return '\uf36f';
+                    }
+                    else if (type === "facebook")
+                    {
+                        return '\uf082';
+                    }
+                    else if (type === "twitter")
+                    {
+                        return '\uf081';
+                    }
+                    else if (type === "instagram")
+                    {
+                        return '\uf16d';
+                    }
+                    else if (type === "social")
+                    {
+                        return '\uf2bd';
+                    }
                     else if (type === "default")
                     {
                         return '\uf2b6';
@@ -464,7 +624,7 @@ class Graph {
         var textLabels = label
                         .attr("x", function(d) { return d.x_axis; })
                         .attr("y", function(d) { return d.y_axis - 20; })
-                        .text( function (d) { console.log(d.name); return d.name; })
+                        .text( function (d) { return d.name; })
                         .attr("font-family", "sans-serif")
                         .attr("font-size", "10px")
                         .attr("fill", "black");    
@@ -486,16 +646,37 @@ class Graph {
         var point = d3.mouse(d3.event.currentTarget), 
         px = {x: point[0]},
         py = {y: point[1]};
-        if(document.getElementById('type').elements.type.value === "email")
+        console.log(document.getElementById('accordion').children[0].attributes[4].nodeValue);
+        if(document.getElementById('accordion').children[0].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addemail').elements.emailname.value;
             var icon = document.getElementById('addemail').elements.icon.value;
             var type = "email";
-        }else if (document.getElementById('type').elements.type.value === "password")
+        }else if (document.getElementById('accordion').children[2].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addpassword').elements.passwordname.value;
-            var icon = "password";
+            var icon = document.getElementById('addpassword').elements.icon.value;
             var type = "password";
+        }else if (document.getElementById('accordion').children[4].attributes[4].nodeValue === "true")
+        {
+            var name = document.getElementById('adddevice').elements.devicename.value;
+            var icon = document.getElementById('adddevice').elements.icon.value;
+            var type = "device";
+        }else if (document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
+        {
+            var name = document.getElementById('addbio').elements.bioname.value;
+            var icon = document.getElementById('addbio').elements.icon.value;
+            var type = "biometric";
+        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
+        {
+            var name = document.getElementById('addshopping').elements.shoppingname.value;
+            var icon = document.getElementById('addshopping').elements.icon.value;
+            var type = "shopping";
+        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        {
+            var name = document.getElementById('addsocial').elements.bioname.value;
+            var icon = document.getElementById('addsocial').elements.icon.value;
+            var type = "social";
         }
         this.addNode(name, type, icon, px.x, py.y, true);
         this.refreshGraph();
@@ -571,33 +752,6 @@ class Graph {
     }
 
     /**
-     * Used to retrieve Form elements for email Node
-     * 
-     * @return {Boolean}
-     */
-    addEmailNode(){
-        var name = document.getElementById('addemail').elements.emailname.value;
-        var icon = document.getElementById('addemail').elements.icon.value;
-        this.addNode(name, "email", icon, 0, 0, false);
-        this.refreshGraph();
-        
-        return true;
-    }
-
-    /**
-     * Used to retrieve Form elements for password Node
-     * 
-     * @return {Boolean}
-     */
-    addPasswordNode(){
-        var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addNode(name, "password", "password", 0, 0, false);
-        this.refreshGraph();
-        
-        return true;
-    }
-
-    /**
      * Refreshes Graph
      * 
      * @return {Boolean}
@@ -630,9 +784,29 @@ class Graph {
     
     /*
      * 
-     * Legacy Methods for Adding Edges to graph
+     * Legacy Methods for Adding Nodes and Edges to graph
+     * 
+     * USED FOR TESTING ONLY
      * 
      */
+    
+
+    addEmailNode(){
+        var name = document.getElementById('addemail').elements.emailname.value;
+        var icon = document.getElementById('addemail').elements.icon.value;
+        this.addNode(name, "email", icon, 0, 0, false);
+        this.refreshGraph();
+        
+        return true;
+    }
+
+    addPasswordNode(){
+        var name = document.getElementById('addpassword').elements.passwordname.value;
+        this.addNode(name, "password", "password", 0, 0, false);
+        this.refreshGraph();
+        
+        return true;
+    }
     
     startLink()
     {
