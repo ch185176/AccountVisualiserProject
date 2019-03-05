@@ -634,11 +634,6 @@ class Graph {
      * 
      */
     
-    
-    /**
-     * 
-     * @return {Boolean}
-     */
     startLink()
     {
         this.nodeInfoNeeded = "start";
