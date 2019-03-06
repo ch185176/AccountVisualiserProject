@@ -137,8 +137,19 @@ class Graph {
             "icon":icon
         };
         
-        this.currentNodeID++;
+         var action = {
+            "action": "addNode",
+            "nodeid": this.currentNodeID,
+            "x_axis":xpos,
+            "y_axis":ypos,
+            "type": type,
+            "name": name,
+            "color":color,
+            "icon":icon
+        };
         
+        this.Actions.push(action);
+        this.currentNodeID++;
         this.Accounts.push(account);
         return account;
     }
@@ -183,8 +194,20 @@ class Graph {
         LinkSanitised.push(link1);
         LinkSanitised.push(link2);
         
+        var action = {
+            "action": "addEdge",
+            "edgeid": this.currentEdgeID,
+            "label": "",
+            "SourceID": sourceID,
+            "x1": x1 + 10,
+            "y1": y1,
+            "TargetID": targetID,
+            "x2": x2 + 10,
+            "y2": y2
+        };
+        
         this.Edges.push(LinkSanitised);
-
+        this.Actions.push(action);
         this.currentEdgeID++;
         
         return Link;
@@ -199,6 +222,8 @@ class Graph {
     deleteNode(id)
     {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
+        this.Actions[pos1].action = "deleteNode";
         this.Accounts.splice(pos);
         
         return this.Accounts[pos];
@@ -265,6 +290,8 @@ class Graph {
     deleteLink(linkID)
     {
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
+        var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(linkID);
+        this.Actions[pos1].action = "deleteEdge";
         this.Links.splice(pos);
         this.Edges.splice(pos);
         
@@ -332,12 +359,50 @@ class Graph {
     
     undo()
     {
+        var undo = this.Actions.pop();
+        this.Actions.push(undo);
         
+        var type = undo.action;
+        
+        if (type === "addNode")
+        {
+            this.deleteNode(undo.nodeid);
+        }else if (type === "deleteNode")
+        {
+            this.addNode(undo.name, undo.type, undo.icon, undo.x_axis, undo.y_axis, true);
+        }else if (type === "addEdge")
+        {
+            this.deleteLink(undo.edgeid);
+        }else if (type === "deleteEdge")
+        {
+            this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
+        }
+        var undo = this.Actions.pop();
+        this.Undos.push(undo);
     }
     
     redo()
     {
+        var redo = this.Undos.pop();
+        this.Undos.push(redo);
         
+        var type = redo.action;
+        
+        if (type === "addNode")
+        {
+            this.deleteNode(redo.nodeid);
+        }else if (type === "deleteNode")
+        {
+            this.addNode(redo.name, redo.type, redo.icon, redo.x_axis, redo.y_axis, true);
+        }else if (type === "addEdge")
+        {
+            this.deleteLink(redo.edgeid);
+        }else if (type === "deleteEdge")
+        {
+            this.addLink(redo.SourceID, redo.TargetID, redo.x1, redo.y1, redo.x2, redo.y2);
+        }
+        console.log(this.Actions);      
+        var redo = this.Undos.pop();
     }
     
     
@@ -408,7 +473,6 @@ class Graph {
                     .style("stroke", "black")
                     .attr("stroke-width", 2); 
             
-                console.log(edgeData); 
             }
         
         var circle = svgContainer.selectAll("circle")
@@ -646,7 +710,6 @@ class Graph {
         var point = d3.mouse(d3.event.currentTarget), 
         px = {x: point[0]},
         py = {y: point[1]};
-        console.log(document.getElementById('accordion').children[0].attributes[4].nodeValue);
         if(document.getElementById('accordion').children[0].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addemail').elements.emailname.value;
@@ -746,9 +809,54 @@ class Graph {
         this.refreshGraph();
     }
     
-    ctrlDrag()
-    {
+
+    /**
+     * Called to add a node
+     * 
+     * @return {Boolean}
+     */
+    addEmailNode(){
+        var name = document.getElementById('addemail').elements.emailname.value;
+        var icon = document.getElementById('addemail').elements.icon.value;
+        this.addNode(name, "email", icon, 0, 0, false);
+        this.Undos = [];
+        this.refreshGraph();
         
+        return true;
+    }
+
+    /**
+     * Called to add a password node
+     * 
+     * @return {Boolean}
+     */
+    addPasswordNode(){
+        var name = document.getElementById('addpassword').elements.passwordname.value;
+        this.addNode(name, "password", "password", 0, 0, false);
+        this.Undos = [];
+        this.refreshGraph();
+        
+        return true;
+    }
+    
+    /**
+     * Called when Undo Button is clicked
+     * 
+     * @return {undefined}
+     */
+    undoButton(){
+        this.undo();
+        this.refreshGraph();
+    }
+    
+    /**
+     * Called when Redo Button is clicked
+     * 
+     * @return {undefined}
+     */
+    redoButton(){
+        this.redo();
+        this.refreshGraph();
     }
 
     /**
@@ -758,6 +866,20 @@ class Graph {
      */
     refreshGraph()
     {
+        if(this.Actions.length === 0)
+        {
+            document.getElementById("undo").disabled = true;
+        }else
+        {
+            document.getElementById("undo").disabled = false;
+        }
+        if(this.Undos.length === 0)
+        {
+            document.getElementById("redo").disabled = true;
+        }else
+        {
+            document.getElementById("redo").disabled = false;
+        }
         d3.select("svg").remove();
         this.exportJSON();
         this.drawGraph();
@@ -789,24 +911,6 @@ class Graph {
      * USED FOR TESTING ONLY
      * 
      */
-    
-
-    addEmailNode(){
-        var name = document.getElementById('addemail').elements.emailname.value;
-        var icon = document.getElementById('addemail').elements.icon.value;
-        this.addNode(name, "email", icon, 0, 0, false);
-        this.refreshGraph();
-        
-        return true;
-    }
-
-    addPasswordNode(){
-        var name = document.getElementById('addpassword').elements.passwordname.value;
-        this.addNode(name, "password", "password", 0, 0, false);
-        this.refreshGraph();
-        
-        return true;
-    }
     
     startLink()
     {

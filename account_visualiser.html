@@ -61,7 +61,14 @@ and open the template in the editor.
                     G.drawGraph();
                 </script>
                 <div class="col">
-                   
+                    <div id="errormanage">
+                        <button id='undo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.undoButton()'>
+                            <i class="fas fa-undo"></i>
+                        </button>
+                        <button id='redo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.redoButton()'>
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
                     <div id="accordion">
                         <h3>Emails</h3>
                         <div>
