@@ -25,6 +25,7 @@ and open the template in the editor.
         <link href="css/mdb.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="css/jquery-menu.css" />
         <script  src="src/visualiser.js"> </script>
+        <link href="css/visualiser.css" rel="stylesheet">
         
         <script>
             $( function() {
@@ -51,21 +52,24 @@ and open the template in the editor.
         <script>
             var G = new Graph();
         </script>
-        <div class="container">
+        <div class="container-fluid">
             <!-- ACCOUNT VISUALISER DIV -->
             <div class="row">
-                <div class="col-md-10" id="graph" style="border:solid black 2px"></div>
+                <div class="col-9" id="graph" style="padding:0;"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>
                     G.drawGraph();
                 </script>
-                <div class="col">
+                <div class="col-3">
                     <div id="errormanage">
-                        <button id='undo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.undoButton()'>
+                        <button id='clear' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.clearGraph()'>
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                        <button id='undo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.undoButton()'disabled>
                             <i class="fas fa-undo"></i>
                         </button>
-                        <button id='redo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.redoButton()'>
+                        <button id='redo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.redoButton()'disabled>
                             <i class="fas fa-redo"></i>
                         </button>
                     </div>
@@ -255,7 +259,97 @@ and open the template in the editor.
                                     
 
                                 <label for="socialname">Label</label>
-                                <input type="text" name="bioname" class="form-control" placeholder="ie. social">
+                                <input type="text" name="socialname" class="form-control" placeholder="ie. social">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Banking</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Banking Account<p>
+                            <form id="addbanking">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="card" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="far fa-credit-card"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="bill">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="dollar">        
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="bankingname">Label</label>
+                                <input type="text" name="bankingname" class="form-control" placeholder="ie. Current Account">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Crypto Currency</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a Crypto Currency Account<p>
+                            <form id="addcrypto">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="bitcoin" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-btc"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="ethereum">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-ethereum"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="coins">        
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-coins"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="cryptoname">Label</label>
+                                <input type="text" name="cryptoname" class="form-control" placeholder="ie. Binance">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Two Factor Authentication</h3>
+                        <div>
+                            <p class="text-black-50">Use This form to add a 2FA Method<p>
+                            <form id="add2fa">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="sms" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-sms"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="famail">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-mail-bulk"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="shield">        
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fas fa-shield-alt"></i>
+                                        </span>
+                                    </label><br>
+                                    
+
+                                <label for="faname">Label</label>
+                                <input type="text" name="faname" class="form-control" placeholder="ie. Binance Email">
                                 </div>
                             </form>
                         </div>
