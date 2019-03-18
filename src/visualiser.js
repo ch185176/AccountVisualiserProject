@@ -175,7 +175,8 @@ class Graph {
             "type": type,
             "name": name,
             "color":color,
-            "icon":icon
+            "icon":icon,
+            "outline":"none"
         };
         
          var action = {
@@ -210,7 +211,8 @@ class Graph {
     { 
         var linkinfo = {
             "id": this.currentEdgeID,
-            "label": ""
+            "label": "",
+            "color":"black"
         };
         
         var link1 = {
@@ -484,7 +486,13 @@ class Graph {
         var data = this.Accounts;
 
         var edgeData = this.Links;
-
+                       
+        var body = d3.select("body")
+            .attr('tabindex', '0')
+            .attr('focusable', 'true')
+            .on("keydown", function(){console.log("key");});
+    
+    
         //Initialises D3 SVG container
         //Container will be located in "graph" div on html page
         var svgContainer = d3.select("#graph")
@@ -493,6 +501,7 @@ class Graph {
             .attr("width", this.width)
             .attr("height", this.height)
             .attr("class", "graph-svg-component")
+            
             .on("contextmenu", function (d, i) {
                     d3.event.preventDefault();
                    // react on right-clicking
@@ -500,7 +509,6 @@ class Graph {
             .call(d3.zoom().on("zoom", function () {
                 svgContainer.attr("transform", d3.event.transform);
             }))
-            
             .append("g");
      
         var defs = svgContainer.append("defs");
@@ -533,11 +541,13 @@ class Graph {
                     .attr("y2", edgeData[i][2].y)    // y position of the second end of the line    
                     .attr("class", "arrow")
                     .attr("marker-end", "url(#arrow)")
-                    .style("stroke", "black")
-                    .on('dblclick', (d)=> this.deleteLink(d.id))
-                    .attr("stroke-width", 2); 
-            
+                    .style("stroke", edgeData[i][0].color)
+                    .attr("stroke-width", 2);
             }
+            
+        var lineAttributes = svgContainer.selectAll("line")
+            .on('mouseover', function(d) {console.log(d);})
+            .on('mouseout', function(d) {console.log(d);});
         
         var circle = svgContainer.selectAll("circle")
             .data(data)
@@ -562,13 +572,26 @@ class Graph {
             .attr("cx", function (d) { return d.x_axis + 8; })
             .attr("cy", function (d) { return d.y_axis - 6; })
             .attr("r", '12px')
-            .style("fill", function(d) { return d.color; });
+            
+            .style("fill", function(d) { return d.color; })
+            .style("stroke", function(d) 
+                { 
+                    if (d.outline === "none")
+                    {
+                        return d.color; 
+                    }else
+                    {
+                        return d.outline;
+                    }
+                })
+            .attr("stroke-width", 2)
+            .on('mouseover', (d)=> this.onHoverNode(d))
+            .on('mouseout', (d)=> this.offHoverNode(d));
 
         var nodeAttributes = node
             .attr("x", function (d) { return d.x_axis; })
             .attr("y", function (d) { return d.y_axis; })
             .attr("id", function (d) { return d.id; })
-            
             /*
              * Manually add icons here
              * 
@@ -816,7 +839,8 @@ class Graph {
                         return '\uf2b6';
                     }
                 })     // Specify your icon in unicode
-                
+            .on('mouseover', (d)=> this.onHoverNode(d))
+            .on('mouseout', (d)=> this.offHoverNode(d))
             //Drag Attributes
             .call(d3.drag()
                 .filter(['touchstart'])
@@ -824,7 +848,7 @@ class Graph {
                 .on("start", (d)=> this.dragstarted(d))
                 .on("drag", ()=> this.dragged())
                 .on("end", ()=> this.dragended()));
-
+        
 
         //Add SVG Text Element Attributes for icons
         var textLabels = label
@@ -1079,6 +1103,62 @@ class Graph {
         this.dragLeft = false;
         this.dragRight = false;
         this.dragStartNode = null;
+    }
+    
+    /**
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
+    onHoverNode(node){
+        var id = node.id;
+        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        
+        this.Accounts[pos].outline = "white";
+        
+        this.refreshGraph();
+    }
+    
+    /**
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
+    offHoverNode(node){
+        var id = node.id;
+        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        
+        this.Accounts[pos].outline = "none"; 
+        
+        this.refreshGraph();
+    }
+    
+    onHoverEdge(edge){
+        var id = edge[0].id;
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+        
+        this.Links[pos][0].color = "white";
+        
+        this.refreshGraph();
+    }
+    
+    offHoverEdge(edge){
+        var id = edge[0].id;
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+        
+        this.Links[pos][0].color = "black";
+        
+        this.refreshGraph();
+    }
+    
+    nodeClick(node){
+        var id = node.id;
+        
+        console.log(id);
+        
+        this.deleteNode(id);
+        
+        this.refreshGraph();
     }
     
 
