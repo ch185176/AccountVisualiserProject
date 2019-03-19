@@ -59,6 +59,13 @@ class Graph {
         this.Actions = [];
         this.Undos =[];
         
+        //Variables for delete
+        this.focusNode;
+        this.focusLink;
+        
+        //Link Color Variables
+        this.linkColors = ["#000000", "#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"];
+        
     } 
     
     /**
@@ -212,7 +219,8 @@ class Graph {
         var linkinfo = {
             "id": this.currentEdgeID,
             "label": "",
-            "color":"black"
+            "color":"#000000",
+            "colorType": 0
         };
         
         var link1 = {
@@ -388,6 +396,33 @@ class Graph {
         return this.Links[pos];
     }
     
+    /**
+     * Changes Link Color to next specified color
+     * 
+     * @param {type} linkID
+     * @return {undefined}
+     */
+    changeLinkColor(linkID)
+    {
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
+        
+        var colorAmount = this.linkColors.length - 1;
+        
+        var currentColor = this.Links[pos][0].colorType;
+        console.log(currentColor);
+        
+        if (colorAmount === currentColor)
+        {
+            this.Links[pos][0].colorType = 0;
+        }else
+        {
+            this.Links[pos][0].colorType++;
+        }
+
+        this.Links[pos][0].color = this.linkColors[currentColor];
+        console.log(this.Links[pos][0].color);
+    }
+    
     undo()
     {
         var undo = this.Actions.pop();
@@ -490,7 +525,31 @@ class Graph {
         var body = d3.select("body")
             .attr('tabindex', '0')
             .attr('focusable', 'true')
-            .on("keydown", function(){console.log("key");});
+            .on("keydown", ()=>
+            {
+                //If key pressed === ctrl
+                if (d3.event.keyCode === 17)
+                {
+                    if(this.focusNode !== null)
+                    {
+                        this.deleteNode(this.focusNode);
+                        this.refreshGraph();
+                    }else if(this.focusEdge !== null)
+                    {
+                        this.deleteLink(this.focusLink);
+                        this.refreshGraph();
+                    }
+                }
+                if (d3.event.keyCode === 16)
+                {
+                    if(this.focusEdge !== null)
+                    {
+                        this.changeLinkColor(this.focusLink);
+                        this.refreshGraph();
+                    }
+                }
+                
+            });
     
     
         //Initialises D3 SVG container
@@ -510,7 +569,8 @@ class Graph {
                 svgContainer.attr("transform", d3.event.transform);
             }))
             .append("g");
-     
+        
+        //Arrow heads for Edges
         var defs = svgContainer.append("defs");
 
         defs.append("marker")
@@ -526,29 +586,29 @@ class Graph {
                     .attr("d", "M0,-5L10,0L0,5")
                     .attr("class","arrowHead");
             
-            
-        var line = d3.line()
-            .x(function (d) { return d.x; })
-            .y(function (d) { return d.y; });
-    
-        //This section add edges based on Links array
-        for (var i=0; i < edgeData.length; i++) 
-            {
-                svgContainer.append("line")
-                    .attr("x1", edgeData[i][1].x)     // x position of the first end of the line
-                    .attr("y1", edgeData[i][1].y)      // y position of the first end of the line
-                    .attr("x2", edgeData[i][2].x)     // x position of the second end of the line
-                    .attr("y2", edgeData[i][2].y)    // y position of the second end of the line    
-                    .attr("class", "arrow")
-                    .attr("marker-end", "url(#arrow)")
-                    .style("stroke", edgeData[i][0].color)
-                    .attr("stroke-width", 2);
-            }
-            
-        var lineAttributes = svgContainer.selectAll("line")
-            .on('mouseover', function(d) {console.log(d);})
-            .on('mouseout', function(d) {console.log(d);});
         
+        //Used for Edges
+        //Data pulled from edgeData array
+        var line = svgContainer.selectAll("line")
+            .data(edgeData)
+            .enter()
+            .append('line');
+           
+        var lineAttributes = svgContainer.selectAll("line")
+            .attr("x1", function(d) {return d[1].x;})     // x position of the first end of the line
+            .attr("y1", function(d) {return d[1].y;})     // y position of the first end of the line
+            .attr("x2", function(d) {return d[2].x;})     // x position of the second end of the line
+            .attr("y2", function(d) {return d[2].y;})   // y position of the second end of the line    
+            .attr("class", "arrow")
+            .attr("marker-end", "url(#arrow)")
+            .style("stroke", function(d) {return d[0].color;})
+            .attr("stroke-width", 2)
+            .on('mouseover', (d)=> this.onHoverEdge(d))
+            .on('mouseout', (d)=> this.offHoverEdge(d))
+            .on('click', function(){console.log("click");});
+        
+        
+        //Circle elements behind nodes
         var circle = svgContainer.selectAll("circle")
             .data(data)
             .enter()
@@ -1115,6 +1175,7 @@ class Graph {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
         
         this.Accounts[pos].outline = "white";
+        this.focusNode = id;
         
         this.refreshGraph();
     }
@@ -1129,6 +1190,7 @@ class Graph {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
         
         this.Accounts[pos].outline = "none"; 
+        this.focusNode = null;
         
         this.refreshGraph();
     }
@@ -1138,6 +1200,7 @@ class Graph {
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
         
         this.Links[pos][0].color = "white";
+        this.focusLink = id;
         
         this.refreshGraph();
     }
@@ -1146,7 +1209,8 @@ class Graph {
         var id = edge[0].id;
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
         
-        this.Links[pos][0].color = "black";
+        this.Links[pos][0].color = this.linkColors[this.Links[pos][0].colorType];
+        this.focusLink = null;
         
         this.refreshGraph();
     }
