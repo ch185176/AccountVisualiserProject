@@ -21,8 +21,8 @@ class Graph {
         y = w.innerHeight|| e.clientHeight|| g.clientHeight;
         
         //Size and width of graph
-        this.width = x/12*9;
-        this.height = y/5*4;
+        this.width = x/12*7; //Based upon bootstrap col size, in this case a col-7
+        this.height = y/5*4; 
         
         //Used for Visualisation (Bipartite Graph)
         this.Accounts = new Array();
@@ -60,11 +60,13 @@ class Graph {
         this.Undos =[];
         
         //Variables for delete
-        this.focusNode;
-        this.focusLink;
+        this.focusNode = null;
+        this.focusLink = null;
         
-        //Link Color Variables
+        //Graph Color Variables
+        //Retrieved from Color picker http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
         this.linkColors = ["#000000", "#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"];
+        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788"];
         
     } 
     
@@ -81,6 +83,7 @@ class Graph {
         var ypos;
         var color;
         
+        //TODO:::Refactor code and find better method of seperating node types
         if (type === "email")
         {
             if (clickToAdd === true){
@@ -90,7 +93,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.2);
             }
-            color = d3.rgb("#7f3b08");
+            color = this.nodeColors[0];
             this.currentEmailPOS = this.currentEmailPOS + 120;
         } else if (type === "password")
         {
@@ -101,7 +104,7 @@ class Graph {
                 xpos = this.currentPasswordPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#b35806");
+            color = this.nodeColors[1];
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         } else if (type === "device")
         {
@@ -112,7 +115,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#e08214");
+            color = this.nodeColors[2];
         } else if (type === "biometric")
         {
             if (clickToAdd === true){
@@ -122,7 +125,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#fdb863");
+            color = this.nodeColors[3];
         } else if (type === "shopping")
         {
             if (clickToAdd === true){
@@ -132,7 +135,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#fee0b6");
+            color = this.nodeColors[4];
         } else if (type === "social")
         {
             if (clickToAdd === true){
@@ -142,7 +145,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#d8daeb");
+            color = this.nodeColors[5];
         } else if (type === "banking")
         {
             if (clickToAdd === true){
@@ -152,7 +155,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#b2abd2");
+            color = this.nodeColors[6];
         } else if (type === "crypto")
         {
             if (clickToAdd === true){
@@ -162,7 +165,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#8073ac");
+            color = this.nodeColors[7];
         } else if (type === "2fa")
         {
             if (clickToAdd === true){
@@ -172,7 +175,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = d3.rgb("#542788");
+            color = this.nodeColors[8];
         }
         
         var account = {
@@ -265,7 +268,7 @@ class Graph {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
         var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
         this.Actions[pos1].action = "deleteNode";
-        this.Accounts.splice(pos);
+        this.Accounts.splice(pos, 1);
         
         return this.Accounts[pos];
     }
@@ -331,8 +334,8 @@ class Graph {
     deleteLink(linkID)
     {
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
-        this.Links.splice(pos);
-        this.Edges.splice(pos);
+        this.Links.splice(pos, 1);
+        this.Edges.splice(pos, 1);
         
         return true;
     }
@@ -423,6 +426,13 @@ class Graph {
         console.log(this.Links[pos][0].color);
     }
     
+    /**
+     * Undo Function
+     * 
+     * Uses a stack to determine what function needs undone next
+     * 
+     * @return {undefined}
+     */
     undo()
     {
         var undo = this.Actions.pop();
@@ -452,6 +462,13 @@ class Graph {
         this.Undos.push(undo);
     }
     
+    /**
+     * Redo function
+     * 
+     * Uses same principles as previous function
+     * 
+     * @return {undefined}
+     */
     redo()
     {
         var redo = this.Undos.pop();
@@ -506,11 +523,15 @@ class Graph {
      * 
      * HTML Specific Funtions
      * 
+     * These functions retrieve DOM elements from the html page to be manipulated
      * 
      */ 
 
     
     /**
+     * Main function
+     * 
+     * Draws D3 SVG graph based on the data from arrays
      * 
      * @return {undefined}
      */
@@ -533,16 +554,18 @@ class Graph {
                     if(this.focusNode !== null)
                     {
                         this.deleteNode(this.focusNode);
+                        this.focusNode = null;
                         this.refreshGraph();
-                    }else if(this.focusEdge !== null)
+                    }else if(this.focusLink !== null)
                     {
                         this.deleteLink(this.focusLink);
+                        this.focusLink = null;
                         this.refreshGraph();
                     }
                 }
                 if (d3.event.keyCode === 16)
                 {
-                    if(this.focusEdge !== null)
+                    if(this.focusLink !== null)
                     {
                         this.changeLinkColor(this.focusLink);
                         this.refreshGraph();
@@ -565,6 +588,8 @@ class Graph {
                     d3.event.preventDefault();
                    // react on right-clicking
                 })
+                //Allows for panning and zooming 
+                //TODO:::Currently position resets on refresh
             .call(d3.zoom().on("zoom", function () {
                 svgContainer.attr("transform", d3.event.transform);
             }))
@@ -633,7 +658,7 @@ class Graph {
             .attr("cy", function (d) { return d.y_axis - 6; })
             .attr("r", '12px')
             
-            .style("fill", function(d) { return d.color; })
+            .style("fill", function(d) { return d3.rgb(d.color); })
             .style("stroke", function(d) 
                 { 
                     if (d.outline === "none")
@@ -656,6 +681,10 @@ class Graph {
              * Manually add icons here
              * 
              * type taken from html page
+             * 
+             * TODO:::Find a better way of adding icons to nodes
+             * 
+             * BUG:::Icons are not centered on Nodes
              * 
              */
             .attr("class", function(d) 
@@ -880,7 +909,7 @@ class Graph {
                     }
                     else if (type === "coins")
                     {
-                        return '\uf155';
+                        return '\uf51e';
                     }
                     else if (type === "sms")
                     {
@@ -943,9 +972,22 @@ class Graph {
             var type = "email";
         }else if (document.getElementById('accordion').children[2].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addpassword').elements.passwordname.value;
-            var icon = document.getElementById('addpassword').elements.icon.value;
-            var type = "password";
+            var name = document.getElementById('addsecurity').elements.passwordname.value;
+            var icon = document.getElementById('addsecurity').elements.icon.value;
+            var type = null;
+            if((icon==='password')||(icon==='lock')||(icon==='swipe'))
+            {
+                type = "password";
+                console.log(type);
+            }else if ((icon==='sms')||(icon==='famail')||(icon==='shield'))
+            {
+                type = "2fa";
+                console.log(type);
+            }else if ((icon==='fingerprint')||(icon==='irus'))
+            {
+                type = "biometric";
+                console.log(type);
+            }
         }else if (document.getElementById('accordion').children[4].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('adddevice').elements.devicename.value;
@@ -953,34 +995,26 @@ class Graph {
             var type = "device";
         }else if (document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addbio').elements.bioname.value;
-            var icon = document.getElementById('addbio').elements.icon.value;
-            var type = "biometric";
-        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
-        {
             var name = document.getElementById('addshopping').elements.shoppingname.value;
             var icon = document.getElementById('addshopping').elements.icon.value;
             var type = "shopping";
-        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addsocial').elements.socialname.value;
             var icon = document.getElementById('addsocial').elements.icon.value;
             var type = "social";
-        }else if (document.getElementById('accordion').children[12].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addbanking').elements.bankingname.value;
-            var icon = document.getElementById('addbanking').elements.icon.value;
-            var type = "banking";
-        }else if (document.getElementById('accordion').children[14].attributes[4].nodeValue === "true")
-        {
-            var name = document.getElementById('addcrypto').elements.cryptoname.value;
-            var icon = document.getElementById('addcrypto').elements.icon.value;
-            var type = "crypto";
-        }else if (document.getElementById('accordion').children[16].attributes[4].nodeValue === "true")
-        {
-            var name = document.getElementById('add2fa').elements.faname.value;
-            var icon = document.getElementById('add2fa').elements.icon.value;
-            var type = "2fa";
+            var name = document.getElementById('addcurrency').elements.bankingname.value;
+            var icon = document.getElementById('addcurrency').elements.icon.value;
+            var type = null;
+            if((icon === 'card')||(icon ==='bill')||(icon ==='dollar'))
+            {
+                type = "banking";
+            }else if ((icon ==='bitcoin')||(icon ==='ethereum')||(icon ==='coins'))
+            {
+                type = "crypto";
+            }
         }
         this.addNode(name, type, icon, px.x, py.y, true);
         this.refreshGraph();
@@ -1050,32 +1084,10 @@ class Graph {
             this.modifyNodePOS(id, px.x, py.y);
             for (var i = 0, len = linksFrom.length; i < len; i++) {
                 this.modifyLinkSource(linksFrom[i][0].id, px.x, py.y);
-                /*
-                var newx;
-                var newy;
-                
-                if (linksFrom[i][2].x > px.x)
-                {
-                    newx = linksFrom[i][2].x - 6;
-                }
-                else
-                {
-                    newx = linksFrom[i][2].x + 6;
-                }
-                
-                if (linksFrom[i][2].y > py.y)
-                {
-                    newy = linksFrom[i][2].y - 6;
-                }
-                else
-                {
-                    newy = linksFrom[i][2].y + 6;
-                }
-                
-                
-                this.modifyLinkTarget(linksFrom[i][0].id, linksFrom[i][2].TargetID, newx, newy);*/
             }
             
+            //Used to decide on edge end point positioning
+            //TODO:::Make this much more accurate
             for (var i = 0, len = linksTo.length; i < len; i++) {
                 var newx;
                 var newy;
@@ -1166,6 +1178,7 @@ class Graph {
     }
     
     /**
+     * Triggered when a node is hovered over
      * 
      * @param {type} node
      * @return {undefined}
@@ -1181,20 +1194,34 @@ class Graph {
     }
     
     /**
+     * Triggered when focus is taken off a node
      * 
      * @param {type} node
      * @return {undefined}
      */
     offHoverNode(node){
-        var id = node.id;
-        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
-        
-        this.Accounts[pos].outline = "none"; 
+        try{
+            var id = node.id;
+            var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+
+            this.Accounts[pos].outline = "none"; 
+        }
+        catch(err)
+        {
+            console.log("Node No Longer Exists");
+        }
         this.focusNode = null;
+        
         
         this.refreshGraph();
     }
     
+    /**
+     * Triggered when an edge is hovered over
+     * 
+     * @param {type} edge
+     * @return {undefined}
+     */
     onHoverEdge(edge){
         var id = edge[0].id;
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
@@ -1205,16 +1232,35 @@ class Graph {
         this.refreshGraph();
     }
     
+    /**
+     * Triggered once focus has been taken off of an edge
+     * 
+     * @param {type} edge
+     * @return {undefined}
+     */
     offHoverEdge(edge){
-        var id = edge[0].id;
-        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
-        
-        this.Links[pos][0].color = this.linkColors[this.Links[pos][0].colorType];
+        try{
+            var id = edge[0].id;
+            var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+            this.Links[pos][0].color = this.linkColors[this.Links[pos][0].colorType];
+        }
+        catch(err)
+        {
+            console.log("Link No Longer Exists");
+        }
         this.focusLink = null;
         
         this.refreshGraph();
     }
     
+    /**
+     * Experemental node clicked function
+     * 
+     * TODO:::Get click functions working on individual elements
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
     nodeClick(node){
         var id = node.id;
         
@@ -1297,7 +1343,6 @@ class Graph {
             document.getElementById("redo").disabled = false;
         }
         d3.select("svg").remove();
-        this.exportJSON();
         this.drawGraph();
         
         return true;
@@ -1345,17 +1390,67 @@ class Graph {
     /**
      * Exports graph JSON
      * 
-     * Stores it in browser localstorage
+     * Not compatable with older browsers
      * 
      * @return {undefined}
      */
     exportJSON(){
         this.JSON = {
-            "nodes": this.Nodes,
+            "currentNodeID": this.currentNodeID,
+            "currentEdgeID": this.currentEdgeID,
+            "nodes": this.Accounts,
             "edges": this.Links
         };
+        
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.JSON)));
+        element.setAttribute('download', 'GraphJSON.json');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
 
         localStorage.setItem("jsongraph", JSON.stringify(this.JSON));
+    }
+    
+    /**
+     * Imports graph JSON
+     * 
+     * Not compatable with older browsers or safari
+     * 
+     * TODO:::Relies on html localstorage to operate, must be a better way
+     * 
+     * @return {undefined}
+     */
+    importJSON(){
+        this.clearGraph();
+        var f = document.getElementById('jsonUpload').files[0];
+
+        var contents;
+        
+        var r = new FileReader();
+        r.onload = (e)=> 
+        { 
+            contents = e.target.result;
+            localStorage.setItem("jsongraph", contents);
+        };
+        r.readAsText(f);
+        
+        var output = JSON.parse(localStorage.getItem("jsongraph"));
+        
+        console.log(output.nodes);
+        
+        this.currentNodeID = output.currentNodeID;
+        this.currentEdgeID = output.currentEdgeID;
+        this.Accounts = output.nodes;
+        this.Links = output.edges;
+        
+        localStorage.setItem("jsongraph", null);
+        
+        this.refreshGraph();
     }
     
     
