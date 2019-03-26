@@ -76,7 +76,7 @@ describe("Adding and Removing Edges", function() {
         
         var link = test.addLink(node1.id, node2.id, node1.x_axis, node1.y_axis, node2.x_axis, node2.y_axis);
         
-        expect(link[1].x).toBe(node1.x_axis + 10);
+        expect(link[1].x).toBe(node1.x_axis);
         expect(link[2].y).toBe(node2.y_axis);
         expect(link[1].SourceID).toBe(node1.id);
         expect(link[2].TargetID).toBe(node2.id);

@@ -11,10 +11,18 @@ class Graph {
      * @return {Graph}
      */
     constructor() 
-    { 
+    {
+        //Get Screen Resolution Variables
+        var w = window,
+        d = document,
+        e = d.documentElement,
+        g = d.getElementsByTagName('body')[0],
+        x = w.innerWidth || e.clientWidth || g.clientWidth,
+        y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+        
         //Size and width of graph
-        this.width = 1000;
-        this.height = 400;
+        this.width = x/12*7; //Based upon bootstrap col size, in this case a col-7
+        this.height = y/5*4; 
         
         //Used for Visualisation (Bipartite Graph)
         this.Accounts = new Array();
@@ -43,10 +51,22 @@ class Graph {
         
         //Drag Variables
         this.validDrag = false;
+        this.dragLeft = false;
+        this.dragRight = false;
+        this.dragStartNode = null;
         
         //Variables for Undo and Redo
         this.Actions = [];
         this.Undos =[];
+        
+        //Variables for delete
+        this.focusNode = null;
+        this.focusLink = null;
+        
+        //Graph Color Variables
+        //Retrieved from Color picker http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
+        this.linkColors = ["#000000", "#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"];
+        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788"];
         
     } 
     
@@ -63,6 +83,7 @@ class Graph {
         var ypos;
         var color;
         
+        //TODO:::Refactor code and find better method of seperating node types
         if (type === "email")
         {
             if (clickToAdd === true){
@@ -72,7 +93,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.2);
             }
-            color = "blue";
+            color = this.nodeColors[0];
             this.currentEmailPOS = this.currentEmailPOS + 120;
         } else if (type === "password")
         {
@@ -83,7 +104,7 @@ class Graph {
                 xpos = this.currentPasswordPOS;
                 ypos = (this.height*0.7);
             }
-            color = "red";
+            color = this.nodeColors[1];
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         } else if (type === "device")
         {
@@ -94,7 +115,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = "yellow";
+            color = this.nodeColors[2];
         } else if (type === "biometric")
         {
             if (clickToAdd === true){
@@ -104,7 +125,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = "pink";
+            color = this.nodeColors[3];
         } else if (type === "shopping")
         {
             if (clickToAdd === true){
@@ -114,7 +135,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = "black";
+            color = this.nodeColors[4];
         } else if (type === "social")
         {
             if (clickToAdd === true){
@@ -124,7 +145,37 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = "green";
+            color = this.nodeColors[5];
+        } else if (type === "banking")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = this.nodeColors[6];
+        } else if (type === "crypto")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = this.nodeColors[7];
+        } else if (type === "2fa")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.7);
+            }
+            color = this.nodeColors[8];
         }
         
         var account = {
@@ -134,7 +185,8 @@ class Graph {
             "type": type,
             "name": name,
             "color":color,
-            "icon":icon
+            "icon":icon,
+            "outline":"none"
         };
         
          var action = {
@@ -169,18 +221,20 @@ class Graph {
     { 
         var linkinfo = {
             "id": this.currentEdgeID,
-            "label": ""
+            "label": "",
+            "color":"#000000",
+            "colorType": 0
         };
         
         var link1 = {
             "SourceID": sourceID,
-            "x": x1 + 10,
+            "x": x1,
             "y": y1
         };
 
         var link2 = {
             "TargetID": targetID,
-            "x": x2 + 10,
+            "x": x2,
             "y": y2
         };
 
@@ -194,20 +248,10 @@ class Graph {
         LinkSanitised.push(link1);
         LinkSanitised.push(link2);
         
-        var action = {
-            "action": "addEdge",
-            "edgeid": this.currentEdgeID,
-            "label": "",
-            "SourceID": sourceID,
-            "x1": x1 + 10,
-            "y1": y1,
-            "TargetID": targetID,
-            "x2": x2 + 10,
-            "y2": y2
-        };
+        
         
         this.Edges.push(LinkSanitised);
-        this.Actions.push(action);
+        
         this.currentEdgeID++;
         
         return Link;
@@ -224,7 +268,7 @@ class Graph {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
         var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
         this.Actions[pos1].action = "deleteNode";
-        this.Accounts.splice(pos);
+        this.Accounts.splice(pos, 1);
         
         return this.Accounts[pos];
     }
@@ -290,10 +334,8 @@ class Graph {
     deleteLink(linkID)
     {
         var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
-        var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(linkID);
-        this.Actions[pos1].action = "deleteEdge";
-        this.Links.splice(pos);
-        this.Edges.splice(pos);
+        this.Links.splice(pos, 1);
+        this.Edges.splice(pos, 1);
         
         return true;
     }
@@ -357,6 +399,40 @@ class Graph {
         return this.Links[pos];
     }
     
+    /**
+     * Changes Link Color to next specified color
+     * 
+     * @param {type} linkID
+     * @return {undefined}
+     */
+    changeLinkColor(linkID)
+    {
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(linkID);
+        
+        var colorAmount = this.linkColors.length - 1;
+        
+        var currentColor = this.Links[pos][0].colorType;
+        console.log(currentColor);
+        
+        if (colorAmount === currentColor)
+        {
+            this.Links[pos][0].colorType = 0;
+        }else
+        {
+            this.Links[pos][0].colorType++;
+        }
+
+        this.Links[pos][0].color = this.linkColors[currentColor];
+        console.log(this.Links[pos][0].color);
+    }
+    
+    /**
+     * Undo Function
+     * 
+     * Uses a stack to determine what function needs undone next
+     * 
+     * @return {undefined}
+     */
     undo()
     {
         var undo = this.Actions.pop();
@@ -373,6 +449,11 @@ class Graph {
         }else if (type === "addEdge")
         {
             this.deleteLink(undo.edgeid);
+            var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(undo.edgeid);
+            if (pos1 !== undefined)
+            {
+                this.Actions[pos1].action = "deleteEdge";
+            }
         }else if (type === "deleteEdge")
         {
             this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
@@ -381,6 +462,13 @@ class Graph {
         this.Undos.push(undo);
     }
     
+    /**
+     * Redo function
+     * 
+     * Uses same principles as previous function
+     * 
+     * @return {undefined}
+     */
     redo()
     {
         var redo = this.Undos.pop();
@@ -397,11 +485,36 @@ class Graph {
         }else if (type === "addEdge")
         {
             this.deleteLink(redo.edgeid);
+            var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(redo.edgeid);
+            if (pos1 !== undefined)
+            {
+                this.Actions[pos1].action = "deleteEdge";
+            }
         }else if (type === "deleteEdge")
         {
-            this.addLink(redo.SourceID, redo.TargetID, redo.x1, redo.y1, redo.x2, redo.y2);
-        }
-        console.log(this.Actions);      
+            var link = this.addLink(redo.SourceID, redo.TargetID, redo.x1, redo.y1, redo.x2, redo.y2);
+            var edgeID = link[0].id;
+            var sourceID = link[1].SourceID;
+            var x1 = link[1].x;
+            var y1 = link[1].y;
+            var targetID = link[2].TargetID;
+            var x2 = link[2].x;
+            var y2 = link[2].y;
+            
+            var action = {
+                "action": "addEdge",
+                "edgeid": edgeID,
+                "label": "",
+                "SourceID": sourceID,
+                "x1": x1,
+                "y1": y1,
+                "TargetID": targetID,
+                "x2": x2,
+                "y2": y2
+            };
+            
+            this.Actions.push(action);
+        }      
         var redo = this.Undos.pop();
     }
     
@@ -410,11 +523,15 @@ class Graph {
      * 
      * HTML Specific Funtions
      * 
+     * These functions retrieve DOM elements from the html page to be manipulated
      * 
      */ 
 
     
     /**
+     * Main function
+     * 
+     * Draws D3 SVG graph based on the data from arrays
      * 
      * @return {undefined}
      */
@@ -425,7 +542,39 @@ class Graph {
         var data = this.Accounts;
 
         var edgeData = this.Links;
-
+                       
+        var body = d3.select("body")
+            .attr('tabindex', '0')
+            .attr('focusable', 'true')
+            .on("keydown", ()=>
+            {
+                //If key pressed === ctrl
+                if (d3.event.keyCode === 17)
+                {
+                    if(this.focusNode !== null)
+                    {
+                        this.deleteNode(this.focusNode);
+                        this.focusNode = null;
+                        this.refreshGraph();
+                    }else if(this.focusLink !== null)
+                    {
+                        this.deleteLink(this.focusLink);
+                        this.focusLink = null;
+                        this.refreshGraph();
+                    }
+                }
+                if (d3.event.keyCode === 16)
+                {
+                    if(this.focusLink !== null)
+                    {
+                        this.changeLinkColor(this.focusLink);
+                        this.refreshGraph();
+                    }
+                }
+                
+            });
+    
+    
         //Initialises D3 SVG container
         //Container will be located in "graph" div on html page
         var svgContainer = d3.select("#graph")
@@ -433,13 +582,20 @@ class Graph {
             .on('click', ()=> this.click())
             .attr("width", this.width)
             .attr("height", this.height)
+            .attr("class", "graph-svg-component")
             
+            .on("contextmenu", function (d, i) {
+                    d3.event.preventDefault();
+                   // react on right-clicking
+                })
+                //Allows for panning and zooming 
+                //TODO:::Currently position resets on refresh
             .call(d3.zoom().on("zoom", function () {
                 svgContainer.attr("transform", d3.event.transform);
             }))
-            
             .append("g");
-     
+        
+        //Arrow heads for Edges
         var defs = svgContainer.append("defs");
 
         defs.append("marker")
@@ -455,26 +611,29 @@ class Graph {
                     .attr("d", "M0,-5L10,0L0,5")
                     .attr("class","arrowHead");
             
-            
-        var line = d3.line()
-            .x(function (d) { return d.x; })
-            .y(function (d) { return d.y; });
-    
-        //This section add edges based on Links array
-        for (var i=0; i < edgeData.length; i++) 
-            {
-                svgContainer.append("line")
-                    .attr("x1", edgeData[i][1].x)     // x position of the first end of the line
-                    .attr("y1", edgeData[i][1].y)      // y position of the first end of the line
-                    .attr("x2", edgeData[i][2].x)     // x position of the second end of the line
-                    .attr("y2", edgeData[i][2].y)    // y position of the second end of the line    
-                    .attr("class", "arrow")
-                    .attr("marker-end", "url(#arrow)")
-                    .style("stroke", "black")
-                    .attr("stroke-width", 2); 
-            
-            }
         
+        //Used for Edges
+        //Data pulled from edgeData array
+        var line = svgContainer.selectAll("line")
+            .data(edgeData)
+            .enter()
+            .append('line');
+           
+        var lineAttributes = svgContainer.selectAll("line")
+            .attr("x1", function(d) {return d[1].x;})     // x position of the first end of the line
+            .attr("y1", function(d) {return d[1].y;})     // y position of the first end of the line
+            .attr("x2", function(d) {return d[2].x;})     // x position of the second end of the line
+            .attr("y2", function(d) {return d[2].y;})   // y position of the second end of the line    
+            .attr("class", "arrow")
+            .attr("marker-end", "url(#arrow)")
+            .style("stroke", function(d) {return d[0].color;})
+            .attr("stroke-width", 2)
+            .on('mouseover', (d)=> this.onHoverEdge(d))
+            .on('mouseout', (d)=> this.offHoverEdge(d))
+            .on('click', function(){console.log("click");});
+        
+        
+        //Circle elements behind nodes
         var circle = svgContainer.selectAll("circle")
             .data(data)
             .enter()
@@ -498,14 +657,36 @@ class Graph {
             .attr("cx", function (d) { return d.x_axis + 8; })
             .attr("cy", function (d) { return d.y_axis - 6; })
             .attr("r", '12px')
-            .style("fill", function(d) { return d.color; });
+            
+            .style("fill", function(d) { return d3.rgb(d.color); })
+            .style("stroke", function(d) 
+                { 
+                    if (d.outline === "none")
+                    {
+                        return d.color; 
+                    }else
+                    {
+                        return d.outline;
+                    }
+                })
+            .attr("stroke-width", 2)
+            .on('mouseover', (d)=> this.onHoverNode(d))
+            .on('mouseout', (d)=> this.offHoverNode(d));
 
         var nodeAttributes = node
             .attr("x", function (d) { return d.x_axis; })
             .attr("y", function (d) { return d.y_axis; })
             .attr("id", function (d) { return d.id; })
-            
-            //Used to determine what icon to use
+            /*
+             * Manually add icons here
+             * 
+             * type taken from html page
+             * 
+             * TODO:::Find a better way of adding icons to nodes
+             * 
+             * BUG:::Icons are not centered on Nodes
+             * 
+             */
             .attr("class", function(d) 
                 { 
                     var type = d.icon;
@@ -582,6 +763,42 @@ class Graph {
                         return "fab";
                     }
                     else if (type === "social")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "dollar")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "card")
+                    {
+                        return "far";
+                    }
+                    else if (type === "bill")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "bitcoin")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "ethereum")
+                    {
+                        return "fab";
+                    }
+                    else if (type === "coins")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "sms")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "famail")
+                    {
+                        return "fas";
+                    }
+                    else if (type === "shield")
                     {
                         return "fas";
                     }
@@ -670,19 +887,57 @@ class Graph {
                     {
                         return '\uf2bd';
                     }
+                    else if (type === "card")
+                    {
+                        return '\uf09d';
+                    }
+                    else if (type === "bill")
+                    {
+                        return '\uf53a';
+                    }
+                    else if (type === "dollar")
+                    {
+                        return '\uf155';
+                    }
+                    else if (type === "bitcoin")
+                    {
+                        return '\uf15a';
+                    }
+                    else if (type === "ethereum")
+                    {
+                        return '\uf42e';
+                    }
+                    else if (type === "coins")
+                    {
+                        return '\uf51e';
+                    }
+                    else if (type === "sms")
+                    {
+                        return '\uf7cd';
+                    }
+                    else if (type === "famail")
+                    {
+                        return '\uf674';
+                    }
+                    else if (type === "shield")
+                    {
+                        return '\uf3ed';
+                    }
                     else if (type === "default")
                     {
                         return '\uf2b6';
                     }
                 })     // Specify your icon in unicode
-            
+            .on('mouseover', (d)=> this.onHoverNode(d))
+            .on('mouseout', (d)=> this.offHoverNode(d))
             //Drag Attributes
             .call(d3.drag()
+                .filter(['touchstart'])
                 //Calls functions based on where the drag is
                 .on("start", (d)=> this.dragstarted(d))
                 .on("drag", ()=> this.dragged())
                 .on("end", ()=> this.dragended()));
-
+        
 
         //Add SVG Text Element Attributes for icons
         var textLabels = label
@@ -717,9 +972,22 @@ class Graph {
             var type = "email";
         }else if (document.getElementById('accordion').children[2].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addpassword').elements.passwordname.value;
-            var icon = document.getElementById('addpassword').elements.icon.value;
-            var type = "password";
+            var name = document.getElementById('addsecurity').elements.passwordname.value;
+            var icon = document.getElementById('addsecurity').elements.icon.value;
+            var type = null;
+            if((icon==='password')||(icon==='lock')||(icon==='swipe'))
+            {
+                type = "password";
+                console.log(type);
+            }else if ((icon==='sms')||(icon==='famail')||(icon==='shield'))
+            {
+                type = "2fa";
+                console.log(type);
+            }else if ((icon==='fingerprint')||(icon==='irus'))
+            {
+                type = "biometric";
+                console.log(type);
+            }
         }else if (document.getElementById('accordion').children[4].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('adddevice').elements.devicename.value;
@@ -727,19 +995,26 @@ class Graph {
             var type = "device";
         }else if (document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addbio').elements.bioname.value;
-            var icon = document.getElementById('addbio').elements.icon.value;
-            var type = "biometric";
-        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
-        {
             var name = document.getElementById('addshopping').elements.shoppingname.value;
             var icon = document.getElementById('addshopping').elements.icon.value;
             var type = "shopping";
-        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
         {
-            var name = document.getElementById('addsocial').elements.bioname.value;
+            var name = document.getElementById('addsocial').elements.socialname.value;
             var icon = document.getElementById('addsocial').elements.icon.value;
             var type = "social";
+        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        {
+            var name = document.getElementById('addcurrency').elements.bankingname.value;
+            var icon = document.getElementById('addcurrency').elements.icon.value;
+            var type = null;
+            if((icon === 'card')||(icon ==='bill')||(icon ==='dollar'))
+            {
+                type = "banking";
+            }else if ((icon ==='bitcoin')||(icon ==='ethereum')||(icon ==='coins'))
+            {
+                type = "crypto";
+            }
         }
         this.addNode(name, type, icon, px.x, py.y, true);
         this.refreshGraph();
@@ -757,7 +1032,15 @@ class Graph {
      */
     dragstarted(startNode)
     {
-        this.addLink(startNode.id, 0, startNode.x_axis, startNode.y_axis, startNode.x_axis, startNode.y_axis);
+        this.dragStartNode = startNode;
+        if (d3.event.sourceEvent.buttons === 1) 
+        {
+            this.addLink(startNode.id, 0, startNode.x_axis, startNode.y_axis - 5, startNode.x_axis, startNode.y_axis);
+            this.dragLeft = true;         
+        }else if (d3.event.sourceEvent.buttons === 2)
+        {
+            this.dragRight = true;  
+        }
     }
     
     /**
@@ -772,10 +1055,66 @@ class Graph {
         var point = d3.mouse(graph), 
         px = {x: point[0]},
         py = {y: point[1]};
+
+        var linksTo = [];
+        var linksFrom = [];
         
-        var pos = this.Links.map(function(e) { return e[2].TargetID; }).indexOf(0);
+        var id = this.dragStartNode.id;
         
-        this.modifyLinkTarget(this.Links[pos][0].id, 0, px.x, py.y);
+        this.Links.forEach(function(res){
+            if(res[2].TargetID === id)
+            {
+                linksTo.push(res);
+            }
+            if(res[1].SourceID === id)
+            {
+                linksFrom.push(res);
+            }
+            
+        });
+        
+        
+        if (this.dragLeft === true) 
+        {
+            var pos = this.Links.map(function(e) { return e[2].TargetID; }).indexOf(0);
+
+            this.modifyLinkTarget(this.Links[pos][0].id, 0, px.x, py.y);
+        } else if (this.dragRight === true)
+        {
+            this.modifyNodePOS(id, px.x, py.y);
+            for (var i = 0, len = linksFrom.length; i < len; i++) {
+                this.modifyLinkSource(linksFrom[i][0].id, px.x, py.y);
+            }
+            
+            //Used to decide on edge end point positioning
+            //TODO:::Make this much more accurate
+            for (var i = 0, len = linksTo.length; i < len; i++) {
+                var newx;
+                var newy;
+                
+                if (px.x > linksTo[i][1].x)
+                {
+                    newx = px.x - 6;
+                }
+                else
+                {
+                    newx = px.x + 6;
+                }
+                
+                if (py.y > linksTo[i][1].y)
+                {
+                    newy = py.y - 6;
+                }
+                else
+                {
+                    newy = py.y + 6;
+                }
+                
+                
+                this.modifyLinkTarget(linksTo[i][0].id, linksTo[i][2].TargetID, newx, newy);
+                
+            }
+        }
         
         this.refreshGraph();
     }
@@ -793,19 +1132,142 @@ class Graph {
         px = {x: point[0]},
         py = {y: point[1]};
 
-        var nodes = this.getNodesNearCoords(px.x, py.y);
-        var pos = this.Links.map(function(e) { return e[2].TargetID; }).indexOf(0);
-        var linkID = this.Links[pos][0].id;
-        console.log(linkID);
+        if (this.dragLeft === true) 
+        {
+            var nodes = this.getNodesNearCoords(px.x, py.y);
+            var pos = this.Links.map(function(e) { return e[2].TargetID; }).indexOf(0);
+            var linkID = this.Links[pos][0].id;
 
-        if (!nodes.length)
+            if (!nodes.length)
+            {
+                this.deleteLink(linkID);
+            }else
+            {
+                var link = this.modifyLinkTarget(linkID, nodes[0].id, px.x, py.y);
+
+                var edgeID = link[0].id;
+                var sourceID = link[1].SourceID;
+                var x1 = link[1].x;
+                var y1 = link[1].y;
+                var targetID = link[2].TargetID;
+                var x2 = link[2].x;
+                var y2 = link[2].y;
+
+                var action = {
+                    "action": "addEdge",
+                    "edgeid": edgeID,
+                    "label": "",
+                    "SourceID": sourceID,
+                    "x1": x1,
+                    "y1": y1,
+                    "TargetID": targetID,
+                    "x2": x2,
+                    "y2": y2
+                };
+
+                this.Actions.push(action);
+            }
+        }else if (this.dragRight === true)
         {
-            this.deleteLink(linkID);
-        }else
-        {
-            this.modifyLinkTarget(linkID, nodes[0].id, px.x, py.y);
+            
         }
+        this.refreshGraph();
+        this.dragLeft = false;
+        this.dragRight = false;
+        this.dragStartNode = null;
+    }
+    
+    /**
+     * Triggered when a node is hovered over
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
+    onHoverNode(node){
+        var id = node.id;
+        var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
+        
+        this.Accounts[pos].outline = "white";
+        this.focusNode = id;
+        
+        this.refreshGraph();
+    }
+    
+    /**
+     * Triggered when focus is taken off a node
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
+    offHoverNode(node){
+        try{
+            var id = node.id;
+            var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
 
+            this.Accounts[pos].outline = "none"; 
+        }
+        catch(err)
+        {
+            console.log("Node No Longer Exists");
+        }
+        this.focusNode = null;
+        
+        
+        this.refreshGraph();
+    }
+    
+    /**
+     * Triggered when an edge is hovered over
+     * 
+     * @param {type} edge
+     * @return {undefined}
+     */
+    onHoverEdge(edge){
+        var id = edge[0].id;
+        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+        
+        this.Links[pos][0].color = "white";
+        this.focusLink = id;
+        
+        this.refreshGraph();
+    }
+    
+    /**
+     * Triggered once focus has been taken off of an edge
+     * 
+     * @param {type} edge
+     * @return {undefined}
+     */
+    offHoverEdge(edge){
+        try{
+            var id = edge[0].id;
+            var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+            this.Links[pos][0].color = this.linkColors[this.Links[pos][0].colorType];
+        }
+        catch(err)
+        {
+            console.log("Link No Longer Exists");
+        }
+        this.focusLink = null;
+        
+        this.refreshGraph();
+    }
+    
+    /**
+     * Experemental node clicked function
+     * 
+     * TODO:::Get click functions working on individual elements
+     * 
+     * @param {type} node
+     * @return {undefined}
+     */
+    nodeClick(node){
+        var id = node.id;
+        
+        console.log(id);
+        
+        this.deleteNode(id);
+        
         this.refreshGraph();
     }
     
@@ -881,26 +1343,114 @@ class Graph {
             document.getElementById("redo").disabled = false;
         }
         d3.select("svg").remove();
-        this.exportJSON();
         this.drawGraph();
         
         return true;
+    }
+    
+    /**
+     * Clears Graph
+     * 
+     * @return {undefined}
+     */
+    clearGraph()
+    {
+        //Used for Visualisation (Bipartite Graph)
+        this.Accounts = new Array();
+        this.Passwords = new Array();
+        this.Links = new Array();
+
+        //Used to create JSON
+        this.JSON = new Object();
+        this.Nodes = new Array();
+        this.Edges = new Array();
+
+        //Node and Edge Objects
+        this.currentNode = new Object();
+        this.currentEdge = new Object();
+
+        //ID and position variables
+        this.currentNodeID = 1;
+        this.currentEdgeID = 1;
+        this.currentEmailLevel = 1;
+        this.currentPasswordLevel = 1;
+        this.currentEmailPOS = 20;
+        this.currentPasswordPOS = 20;
+        this.nodeInfoNeeded = "none";
+        this.nodeLinkA = [];
+        this.nodeLinkB = [];
+        
+        //Variables for Undo and Redo
+        this.Actions = [];
+        this.Undos =[];
+        
+        this.refreshGraph();
     }
 
     /**
      * Exports graph JSON
      * 
-     * Stores it in browser localstorage
+     * Not compatable with older browsers
      * 
      * @return {undefined}
      */
     exportJSON(){
         this.JSON = {
-            "nodes": this.Nodes,
-            "edges": this.Edges
+            "currentNodeID": this.currentNodeID,
+            "currentEdgeID": this.currentEdgeID,
+            "nodes": this.Accounts,
+            "edges": this.Links
         };
+        
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.JSON)));
+        element.setAttribute('download', 'GraphJSON.json');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
 
         localStorage.setItem("jsongraph", JSON.stringify(this.JSON));
+    }
+    
+    /**
+     * Imports graph JSON
+     * 
+     * Not compatable with older browsers or safari
+     * 
+     * TODO:::Relies on html localstorage to operate, must be a better way
+     * 
+     * @return {undefined}
+     */
+    importJSON(){
+        this.clearGraph();
+        var f = document.getElementById('jsonUpload').files[0];
+
+        var contents;
+        
+        var r = new FileReader();
+        r.onload = (e)=> 
+        { 
+            contents = e.target.result;
+            localStorage.setItem("jsongraph", contents);
+        };
+        r.readAsText(f);
+        
+        var output = JSON.parse(localStorage.getItem("jsongraph"));
+        
+        console.log(output.nodes);
+        
+        this.currentNodeID = output.currentNodeID;
+        this.currentEdgeID = output.currentEdgeID;
+        this.Accounts = output.nodes;
+        this.Links = output.edges;
+        
+        localStorage.setItem("jsongraph", null);
+        
+        this.refreshGraph();
     }
     
     
