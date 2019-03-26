@@ -35,48 +35,101 @@ and open the template in the editor.
                     
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm justify-content-center" style="background-color:#464646; margin-bottom:10px;">
-            <div class="navbar-nav" id="basicExampleNav">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a href="index.html" class="btn btn-primary" type="button" style="margin-left:5px; margin-right:5px;">Back</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="btn btn-primary" type="button" style="margin-left:5px; margin-right:5px;">Help</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
         
         <!-- ACCOUNT VISUALISER  -->
         <script>
             var G = new Graph();
         </script>
-        <div class="container-fluid">
-            <!-- ACCOUNT VISUALISER DIV -->
+        <div class="container-fluid pt-2">
+            
             <div class="row">
-                <div class="col-9" id="graph" style="padding:0;"></div>
+                <div class="col-2">
+                    
+                    <!--User Instructions-->
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Input</h2>
+                    <div id="input" class="pb-2">
+                        <div class="row justify-content-center">
+                            <p class="font-weight-bold">Left Click</p>
+                            <p class="pl-2">Add a Node</p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="font-weight-bold">Left Click + Drag</p>
+                            <p class="pl-2">Add an Edge</p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="font-weight-bold">Right Click + Drag</p>
+                            <p class="pl-2">Drag a Node</p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="font-weight-bold">Shift + Hover</p>
+                            <p class="pl-2">Change Link Colour</p>
+                        </div>
+                        <div class="row justify-content-center">
+                            <p class="font-weight-bold">CTRL + Hover</p>
+                            <p class="pl-2">Delete Element</p>
+                        </div>
+                    </div>
+                    
+                    <!--Graph Edits such as undo, clear and redo-->
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Edit Graph</h2>
+                    <div id="errormanage" class="pb-2">
+                        <div class="row justify-content-center">
+                            <button id='clear' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.clearGraph()'>
+                                <i class="fas fa-times-circle"></i>
+                                Clear Graph
+                            </button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button id='undo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.undoButton()'disabled>
+                                <i class="fas fa-undo"></i>
+                                Undo
+                            </button>
+                            <button id='redo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.redoButton()'disabled>
+                                <i class="fas fa-redo"></i>
+                                Redo
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!--Upload and download button section-->
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Upload/Download</h2>
+                    <div id="import" class="pb-2">
+                        <div class="row justify-content-center">
+                            <input type="file" id="jsonUpload">
+                        </div>
+                        <div class="row justify-content-center">
+                            <button id='upload' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.importJSON()'>
+                                <i class="fas fa-upload"></i>
+                                Import
+                            </button>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button id='download' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.exportJSON()'>
+                                <i class="fas fa-download"></i>
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- This is where the account visualiser lives-->
+                <div class="col-7" id="graph" style="padding:0;"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>
                     G.drawGraph();
                 </script>
                 <div class="col-3">
-                    <div id="errormanage">
-                        <button id='clear' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.clearGraph()'>
-                            <i class="fas fa-times-circle"></i>
-                        </button>
-                        <button id='undo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.undoButton()'disabled>
-                            <i class="fas fa-undo"></i>
-                        </button>
-                        <button id='redo' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.redoButton()'disabled>
-                            <i class="fas fa-redo"></i>
-                        </button>
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Add a Node</h2>
+                    <div class="row justify-content-center">
+                        <p class="font-weight-bold">Choose Icon and Label</p>
                     </div>
+                    
+                    
+                    <!-- Accordion form used to specify node icons and types -->
                     <div id="accordion">
-                        <h3>Emails</h3>
+                        <h3>Email</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add an Email address<p>
                             <form id="addemail">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="default" checked>        
@@ -104,43 +157,82 @@ and open the template in the editor.
                                         </span>
                                     </label><br>
 
-                                <label for="emailname">Email Label</label>
+                                <label for="emailname">Label</label>
                                 <input type="text" name="emailname" class="form-control" placeholder="ie. home">
                                 </div>
                             </form>
                         </div>
                         <h3>Security</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add a Password<p>
-                            <form id="addpassword">
+                            <form id="addsecurity">
                                 <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="password" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-key"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="lock">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-unlock-alt"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio3" value="swipe">     
-                                    <label for="radio3">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-hand-point-up"></i>
-                                        </span>
-                                    </label><br>
+                                    <div class='row'>
+                                        <div class='col-4'>
+                                            <p class="text-black-50">Passwords</p>
+                                            <input type="radio" name="icon" id="radio1" value="password" checked>        
+                                            <label for="radio1">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-key"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio2" value="lock">        
+                                            <label for="radio2">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-unlock-alt"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio3" value="swipe">     
+                                            <label for="radio3">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-hand-point-up"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                        <div class='col-4'>
+                                            <p class="text-black-50">Two Factor Authentication</p>
+                                            <input type="radio" name="icon" id="radio4" value="sms">        
+                                            <label for="radio1">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-sms"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio5" value="famail">        
+                                            <label for="radio2">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-mail-bulk"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio6" value="shield">        
+                                            <label for="radio3">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-shield-alt"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                        <div class='col-4'>
+                                            <p class="text-black-50">Biometrics</p>
+                                            <input type="radio" name="icon" id="radio1" value="fingerprint">        
+                                            <label for="radio1">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-fingerprint"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio2" value="irus">        
+                                            <label for="radio2">
+                                                <span class="fa-stack">
+                                                    <i class="far fa-eye"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                    </div>
                                     
-                                <label for="passwordname">Password Name</label>
+                                <label for="passwordname">Label</label>
                                 <input type="text" name="passwordname" class="form-control" placeholder="ie. 1">
                                 </div>
                             </form>
                         </div>
-                        <h3>Devices</h3>
+                        <h3>Device</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add a Device<p>
                             <form id="adddevice">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="mobile" checked>        
@@ -173,33 +265,8 @@ and open the template in the editor.
                                 </div>
                             </form>
                         </div>
-                        <h3>Biometrics</h3>
-                        <div>
-                            <p class="text-black-50">Use This form to add a Biometric<p>
-                            <form id="addbio">
-                                <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="fingerprint" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-fingerprint"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="irus">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="far fa-eye"></i>
-                                        </span>
-                                    </label><br>
-                                    
-
-                                <label for="bioname">Label</label>
-                                <input type="text" name="bioname" class="form-control" placeholder="ie. index finger">
-                                </div>
-                            </form>
-                        </div>
                         <h3>Shopping</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add a Shop<p>
                             <form id="addshopping">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="amazon" checked>        
@@ -229,7 +296,6 @@ and open the template in the editor.
                         </div>
                         <h3>Social Media</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add a Social Media Profile<p>
                             <form id="addsocial">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="facebook" checked>        
@@ -263,93 +329,56 @@ and open the template in the editor.
                                 </div>
                             </form>
                         </div>
-                        <h3>Banking</h3>
+                        <h3>Currency</h3>
                         <div>
-                            <p class="text-black-50">Use This form to add a Banking Account<p>
-                            <form id="addbanking">
+                            <form id="addcurrency">
                                 <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="card" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="far fa-credit-card"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="bill">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-money-bill-wave"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio3" value="dollar">        
-                                    <label for="radio3">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-dollar-sign"></i>
-                                        </span>
-                                    </label><br>
-                                    
-
-                                <label for="bankingname">Label</label>
-                                <input type="text" name="bankingname" class="form-control" placeholder="ie. Current Account">
-                                </div>
-                            </form>
-                        </div>
-                        <h3>Crypto Currency</h3>
-                        <div>
-                            <p class="text-black-50">Use This form to add a Crypto Currency Account<p>
-                            <form id="addcrypto">
-                                <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="bitcoin" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="fab fa-btc"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="ethereum">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="fab fa-ethereum"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio3" value="coins">        
-                                    <label for="radio3">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-coins"></i>
-                                        </span>
-                                    </label><br>
-                                    
-
-                                <label for="cryptoname">Label</label>
-                                <input type="text" name="cryptoname" class="form-control" placeholder="ie. Binance">
-                                </div>
-                            </form>
-                        </div>
-                        <h3>Two Factor Authentication</h3>
-                        <div>
-                            <p class="text-black-50">Use This form to add a 2FA Method<p>
-                            <form id="add2fa">
-                                <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="sms" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-sms"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="famail">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-mail-bulk"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio3" value="shield">        
-                                    <label for="radio3">
-                                        <span class="fa-stack">
-                                            <i class="fas fa-shield-alt"></i>
-                                        </span>
-                                    </label><br>
-                                    
-
-                                <label for="faname">Label</label>
-                                <input type="text" name="faname" class="form-control" placeholder="ie. Binance Email">
+                                    <div class='row'>
+                                            <div class='col-6'>
+                                                <p class="text-black-50">Banking</p>
+                                                <input type="radio" name="icon" id="radio1" value="card" checked>        
+                                                <label for="radio1">
+                                                    <span class="fa-stack">
+                                                        <i class="far fa-credit-card"></i>
+                                                    </span>
+                                                </label><br>
+                                                <input type="radio" name="icon" id="radio2" value="bill">        
+                                                <label for="radio2">
+                                                    <span class="fa-stack">
+                                                        <i class="fas fa-money-bill-wave"></i>
+                                                    </span>
+                                                </label><br>
+                                                <input type="radio" name="icon" id="radio3" value="dollar">        
+                                                <label for="radio3">
+                                                    <span class="fa-stack">
+                                                        <i class="fas fa-dollar-sign"></i>
+                                                    </span>
+                                                </label><br>
+                                            </div>
+                                            <div class='col-6'>
+                                                <p class="text-black-50">Crypto Currency</p>
+                                                <input type="radio" name="icon" id="radio1" value="bitcoin">        
+                                                <label for="radio1">
+                                                    <span class="fa-stack">
+                                                        <i class="fab fa-btc"></i>
+                                                    </span>
+                                                </label><br>
+                                                <input type="radio" name="icon" id="radio2" value="ethereum">        
+                                                <label for="radio2">
+                                                    <span class="fa-stack">
+                                                        <i class="fab fa-ethereum"></i>
+                                                    </span>
+                                                </label><br>
+                                                <input type="radio" name="icon" id="radio3" value="coins">        
+                                                <label for="radio3">
+                                                    <span class="fa-stack">
+                                                        <i class="fas fa-coins"></i>
+                                                    </span>
+                                                </label><br>
+                                            </div>
+                                        <label for="bankingname">Label</label>
+                                        <input type="text" name="bankingname" class="form-control" placeholder="ie. Current Account">
+                                    </div>
                                 </div>
                             </form>
                         </div>
