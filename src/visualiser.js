@@ -21,7 +21,7 @@ class Graph {
         y = w.innerHeight|| e.clientHeight|| g.clientHeight;
         
         //Size and width of graph
-        this.width = x/12*7; //Based upon bootstrap col size, in this case a col-7
+        this.width = x/12*6; //Based upon bootstrap col size, in this case a col-6
         this.height = y/5*4; 
         
         //Used for Visualisation (Bipartite Graph)

@@ -43,7 +43,7 @@ and open the template in the editor.
         <div class="container-fluid pt-2">
             
             <div class="row">
-                <div class="col-2">
+                <div class="col-3">
                     
                     <!--User Instructions-->
                     <h2 class="text-center text-white rounded" style="background-color:#464646;">Input</h2>
@@ -92,7 +92,7 @@ and open the template in the editor.
                     </div>
                     
                     <!--Upload and download button section-->
-                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Upload/Download</h2>
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Import/Export</h2>
                     <div id="import" class="pb-2">
                         <div class="row justify-content-center">
                             <input type="file" id="jsonUpload">
@@ -106,14 +106,14 @@ and open the template in the editor.
                         <div class="row justify-content-center">
                             <button id='download' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.exportJSON()'>
                                 <i class="fas fa-download"></i>
-                                Download
+                                Export
                             </button>
                         </div>
                     </div>
                 </div>
                 
                 <!-- This is where the account visualiser lives-->
-                <div class="col-7" id="graph" style="padding:0;"></div>
+                <div class="col-6" id="graph" style="padding:0;"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>

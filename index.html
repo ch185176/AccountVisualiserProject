@@ -41,12 +41,24 @@ and open the template in the editor.
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                <a href="account_visualiser.html" class="btn btn-primary">Continue</a>
+                <div class="col">
+                    <div class="checkbox">
+                        <label><input id='check' type="checkbox"> I have read and understand the conditions of using the application</label>
+                    </div>
+                    <button id='continue' class="btn btn-primary" onclick="window.location.href = 'account_visualiser.html';" disabled> Continue</button>
                 </div>
-                <div class="col-md-6">
-                <a href="test_d3.html" class="btn btn-primary">Test</a>
-                </div>
+                <script>
+                    var checker = document.getElementById('check');
+                    var sendbtn = document.getElementById('continue');
+                    // when unchecked or checked, run the function
+                    checker.onchange = function(){
+                        if(this.checked){
+                            sendbtn.disabled = false;
+                        } else {
+                            sendbtn.disabled = true;
+                        }
+                   }
+                </script>
             </div>
         </div>
     </body>
