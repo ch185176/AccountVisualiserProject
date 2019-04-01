@@ -65,8 +65,8 @@ class Graph {
         
         //Graph Color Variables
         //Retrieved from Color picker http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
-        this.linkColors = ["#000000", "#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"];
-        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788"];
+        this.linkColors = ["#000000", "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a"];
+        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788", "#2d004b"];
         
     } 
     
@@ -84,7 +84,7 @@ class Graph {
         var color;
         
         //TODO:::Refactor code and find better method of seperating node types
-        if (type === "email")
+        if (type === "login")
         {
             if (clickToAdd === true){
                 xpos = x;
@@ -94,6 +94,17 @@ class Graph {
                 ypos = (this.height*0.2);
             }
             color = this.nodeColors[0];
+        }
+        else if (type === "email")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.2);
+            }
+            color = this.nodeColors[1];
             this.currentEmailPOS = this.currentEmailPOS + 120;
         } else if (type === "password")
         {
@@ -104,7 +115,7 @@ class Graph {
                 xpos = this.currentPasswordPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[1];
+            color = this.nodeColors[2];
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         } else if (type === "device")
         {
@@ -115,7 +126,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[2];
+            color = this.nodeColors[3];
         } else if (type === "biometric")
         {
             if (clickToAdd === true){
@@ -125,7 +136,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[3];
+            color = this.nodeColors[4];
         } else if (type === "shopping")
         {
             if (clickToAdd === true){
@@ -135,7 +146,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[4];
+            color = this.nodeColors[5];
         } else if (type === "social")
         {
             if (clickToAdd === true){
@@ -145,7 +156,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[5];
+            color = this.nodeColors[6];
         } else if (type === "banking")
         {
             if (clickToAdd === true){
@@ -155,7 +166,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[6];
+            color = this.nodeColors[7];
         } else if (type === "crypto")
         {
             if (clickToAdd === true){
@@ -165,7 +176,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[7];
+            color = this.nodeColors[8];
         } else if (type === "2fa")
         {
             if (clickToAdd === true){
@@ -175,7 +186,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[8];
+            color = this.nodeColors[9];
         }
         
         var account = {
@@ -284,12 +295,17 @@ class Graph {
             this.Actions.push(action);
         }
         
-        var edgesTo = this.Links.map(function(e){ return e[2].TargetID; }).indexOf(id);
-        var edgesFrom = this.Links.map(function(e){ return e[1].SourceID; }).indexOf(id);
+        var edgesTo = this.Links.filter(edge=>(edge[2].TargetID === id));
+        var edgesFrom = this.Links.filter(edge=>(edge[1].SourceID === id));
         console.log(edgesTo);
-        this.deleteLink(this.Links[edgesTo][0].id);
-        this.deleteLink(this.Links[edgesFrom][0].id);
-
+        
+        edgesTo.forEach((edge)=>{
+            this.deleteLink(edge[0].id);
+        });
+        
+        edgesFrom.forEach((edge)=>{
+            this.deleteLink(edge[0].id);
+        });       
         
         this.Accounts.splice(pos, 1);
         
@@ -992,6 +1008,11 @@ class Graph {
         py = {y: point[1]};
         if(document.getElementById('accordion').children[0].attributes[4].nodeValue === "true")
         {
+            var name = document.getElementById('addlogin').elements.loginname.value;
+            var icon = document.getElementById('addlogin').elements.icon.value;
+            var type = "login";
+        }else if(document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
+        {
             var name = document.getElementById('addemail').elements.emailname.value;
             var icon = document.getElementById('addemail').elements.icon.value;
             var type = "email";
@@ -1018,17 +1039,17 @@ class Graph {
             var name = document.getElementById('adddevice').elements.devicename.value;
             var icon = document.getElementById('adddevice').elements.icon.value;
             var type = "device";
-        }else if (document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addshopping').elements.shoppingname.value;
             var icon = document.getElementById('addshopping').elements.icon.value;
             var type = "shopping";
-        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addsocial').elements.socialname.value;
             var icon = document.getElementById('addsocial').elements.icon.value;
             var type = "social";
-        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[12].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addcurrency').elements.bankingname.value;
             var icon = document.getElementById('addcurrency').elements.icon.value;
