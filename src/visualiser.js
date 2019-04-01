@@ -266,8 +266,31 @@ class Graph {
     deleteNode(id)
     {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
-        var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
-        this.Actions[pos1].action = "deleteNode";
+        try{
+            var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
+            this.Actions[pos1].action = "deleteNode";
+        }catch(err)
+        {
+            var action = {
+            "action": "deleteNode",
+            "nodeid": this.Accounts[pos].nodeid,
+            "x_axis":this.Accounts[pos].x_axis,
+            "y_axis":this.Accounts[pos].y_axis,
+            "type": this.Accounts[pos].type,
+            "name": this.Accounts[pos].name,
+            "color":this.Accounts[pos].color,
+            "icon":this.Accounts[pos].icon
+            };
+            this.Actions.push(action);
+        }
+        
+        var edgesTo = this.Links.map(function(e){ return e[2].TargetID; }).indexOf(id);
+        var edgesFrom = this.Links.map(function(e){ return e[1].SourceID; }).indexOf(id);
+        console.log(edgesTo);
+        this.deleteLink(this.Links[edgesTo][0].id);
+        this.deleteLink(this.Links[edgesFrom][0].id);
+
+        
         this.Accounts.splice(pos, 1);
         
         return this.Accounts[pos];
@@ -553,6 +576,7 @@ class Graph {
                 {
                     if(this.focusNode !== null)
                     {
+                        console.log(this.focusNode);
                         this.deleteNode(this.focusNode);
                         this.focusNode = null;
                         this.refreshGraph();
@@ -928,6 +952,7 @@ class Graph {
                         return '\uf2b6';
                     }
                 })     // Specify your icon in unicode
+                        .on('click', (d) => console.log("test"))
             .on('mouseover', (d)=> this.onHoverNode(d))
             .on('mouseout', (d)=> this.offHoverNode(d))
             //Drag Attributes
@@ -1441,7 +1466,6 @@ class Graph {
         
         var output = JSON.parse(localStorage.getItem("jsongraph"));
         
-        console.log(output.nodes);
         
         this.currentNodeID = output.currentNodeID;
         this.currentEdgeID = output.currentEdgeID;
