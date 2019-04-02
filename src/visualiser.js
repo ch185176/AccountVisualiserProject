@@ -603,13 +603,6 @@ class Graph {
         {
             this.deleteLink(redo.edgeid);
             var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(redo.edgeid);
-            try{
-                this.Actions[pos1].action = "deleteEdge";
-                this.Actions.splice(pos1, 1);
-            }catch(err)
-            {
-                console.log("Actions Empty");
-            }
             
             var action = {
                 "action": "deleteEdge",
