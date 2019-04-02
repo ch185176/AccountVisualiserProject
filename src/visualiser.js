@@ -71,7 +71,7 @@ class Graph {
     } 
     
     /**
-     * Adds Node to  graph of specified type
+     * Adds Node to graph of specified type
      * 
      * @param {type} name
      * @param {type} type
@@ -277,27 +277,22 @@ class Graph {
     deleteNode(id)
     {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
-        try{
-            var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
-            this.Actions[pos1].action = "deleteNode";
-        }catch(err)
-        {
-            var action = {
-            "action": "deleteNode",
-            "nodeid": this.Accounts[pos].nodeid,
-            "x_axis":this.Accounts[pos].x_axis,
-            "y_axis":this.Accounts[pos].y_axis,
-            "type": this.Accounts[pos].type,
-            "name": this.Accounts[pos].name,
-            "color":this.Accounts[pos].color,
-            "icon":this.Accounts[pos].icon
-            };
-            this.Actions.push(action);
-        }
-        
         var edgesTo = this.Links.filter(edge=>(edge[2].TargetID === id));
-        var edgesFrom = this.Links.filter(edge=>(edge[1].SourceID === id));
-        console.log(edgesTo);
+        var edgesFrom = this.Links.filter(edge=>(edge[1].SourceID === id));      
+        
+        var action = {
+        "action": "deleteNode",
+        "nodeid": this.Accounts[pos].id,
+        "x_axis":this.Accounts[pos].x_axis,
+        "y_axis":this.Accounts[pos].y_axis,
+        "type": this.Accounts[pos].type,
+        "name": this.Accounts[pos].name,
+        "color":this.Accounts[pos].color,
+        "icon":this.Accounts[pos].icon,
+        "linksTo": edgesTo,
+        "linksFrom": edgesFrom
+        };
+        this.Actions.push(action);
         
         edgesTo.forEach((edge)=>{
             this.deleteLink(edge[0].id);
@@ -305,7 +300,7 @@ class Graph {
         
         edgesFrom.forEach((edge)=>{
             this.deleteLink(edge[0].id);
-        });       
+        });
         
         this.Accounts.splice(pos, 1);
         
@@ -451,7 +446,6 @@ class Graph {
         var colorAmount = this.linkColors.length - 1;
         
         var currentColor = this.Links[pos][0].colorType;
-        console.log(currentColor);
         
         if (colorAmount === currentColor)
         {
@@ -476,29 +470,92 @@ class Graph {
     {
         var undo = this.Actions.pop();
         this.Actions.push(undo);
-        
         var type = undo.action;
         
         if (type === "addNode")
         {
             this.deleteNode(undo.nodeid);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
         }else if (type === "deleteNode")
         {
-            this.addNode(undo.name, undo.type, undo.icon, undo.x_axis, undo.y_axis, true);
+            var node = this.addNode(undo.name, undo.type, undo.icon, undo.x_axis, undo.y_axis, true);
+            try{
+                var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(undo.nodeid);
+                this.Actions[pos1].nodeid = node.id;
+                
+            }catch(err)
+            {
+                console.log("No Action");
+            } 
+            
+            var linksTo = undo.linksTo;
+            var linksFrom = undo.linksFrom;
+            
+            linksTo.forEach((links)=>{
+                this.addLink(links[1].SourceID, node.id, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            linksFrom.forEach((links)=>{
+                this.addLink(node.id, links[2].TargetID, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            this.Actions.pop();
+            var undo = this.Actions.pop();
+            undo.nodeid = node.id;
+            undo.action = "addNode";
+            this.Undos.push(undo);
         }else if (type === "addEdge")
         {
             this.deleteLink(undo.edgeid);
-            var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(undo.edgeid);
-            if (pos1 !== undefined)
-            {
-                this.Actions[pos1].action = "deleteEdge";
-            }
+          
+            var action = {
+                "action": "deleteEdge",
+                "edgeid": undo.edgeid,
+                "label": "",
+                "SourceID": undo.SourceID,
+                "x1": undo.x1,
+                "y1": undo.y1,
+                "TargetID": undo.targetID,
+                "x2": undo.x2,
+                "y2": undo.y2
+            };
+            
+            this.Actions.push(action);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
+            
         }else if (type === "deleteEdge")
         {
-            this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
+            var link = this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
+            var edgeID = link[0].id;
+            var sourceID = link[1].SourceID;
+            var x1 = link[1].x;
+            var y1 = link[1].y;
+            var targetID = link[2].TargetID;
+            var x2 = link[2].x;
+            var y2 = link[2].y;
+            
+            var action = {
+                "action": "addEdge",
+                "edgeid": edgeID,
+                "label": "",
+                "SourceID": sourceID,
+                "x1": x1,
+                "y1": y1,
+                "TargetID": targetID,
+                "x2": x2,
+                "y2": y2
+            };
+            
+            this.Actions.push(action);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
         }
-        var undo = this.Actions.pop();
-        this.Undos.push(undo);
+        console.log(this.Undos);
     }
     
     /**
@@ -512,23 +569,61 @@ class Graph {
     {
         var redo = this.Undos.pop();
         this.Undos.push(redo);
-        
+        console.log(this.Undos);
         var type = redo.action;
         
         if (type === "addNode")
         {
             this.deleteNode(redo.nodeid);
+            this.Undos.pop();
         }else if (type === "deleteNode")
         {
-            this.addNode(redo.name, redo.type, redo.icon, redo.x_axis, redo.y_axis, true);
+            var node = this.addNode(redo.name, redo.type, redo.icon, redo.x_axis, redo.y_axis, true);
+
+            try{
+                var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(redo.nodeid);
+                this.Actions[pos1].nodeid = node.id;
+                
+            }catch(err)
+            {
+                console.log("No Action");
+            } 
+            
+            var linksTo = redo.linksTo;
+            var linksFrom = redo.linksFrom;
+            
+            linksTo.forEach((links)=>{
+                this.addLink(links[1].SourceID, node.id, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            linksFrom.forEach((links)=>{
+                this.addLink(node.id, links[2].TargetID, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
         }else if (type === "addEdge")
         {
             this.deleteLink(redo.edgeid);
             var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(redo.edgeid);
-            if (pos1 !== undefined)
-            {
+            try{
                 this.Actions[pos1].action = "deleteEdge";
+                this.Actions.splice(pos1, 1);
+            }catch(err)
+            {
+                console.log("Actions Empty");
             }
+            
+            var action = {
+                "action": "deleteEdge",
+                "edgeid": redo.edgeid,
+                "label": "",
+                "SourceID": redo.SourceID,
+                "x1": redo.x1,
+                "y1": redo.y1,
+                "TargetID": redo.targetID,
+                "x2": redo.x2,
+                "y2": redo.y2
+            };
+            
+            this.Undos.push(action);
         }else if (type === "deleteEdge")
         {
             var link = this.addLink(redo.SourceID, redo.TargetID, redo.x1, redo.y1, redo.x2, redo.y2);
@@ -552,7 +647,7 @@ class Graph {
                 "y2": y2
             };
             
-            this.Actions.push(action);
+            this.Undos.push(action);
         }      
         var redo = this.Undos.pop();
     }
@@ -592,13 +687,30 @@ class Graph {
                 {
                     if(this.focusNode !== null)
                     {
-                        console.log(this.focusNode);
                         this.deleteNode(this.focusNode);
                         this.focusNode = null;
+                        this.Undos = [];
                         this.refreshGraph();
                     }else if(this.focusLink !== null)
                     {
+                        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(this.focusLink);;
+                        var link = this.Links[pos];
+                        console.log(link);
+                        var action = {
+                            "action": "deleteEdge",
+                            "edgeid": link[0].id,
+                            "label": "",
+                            "SourceID": link[1].SourceID,
+                            "x1": link[1].x,
+                            "y1": link[1].y,
+                            "TargetID": link[2].TargetID,
+                            "x2": link[2].x,
+                            "y2": link[2].y
+                        };
                         this.deleteLink(this.focusLink);
+                        this.Undos = [];
+                        this.Actions.push(action);
+                        console.log(this.Actions);
                         this.focusLink = null;
                         this.refreshGraph();
                     }
@@ -1062,6 +1174,8 @@ class Graph {
                 type = "crypto";
             }
         }
+        
+        this.Undos = [];
         this.addNode(name, type, icon, px.x, py.y, true);
         this.refreshGraph();
         
@@ -1210,7 +1324,7 @@ class Graph {
                     "x2": x2,
                     "y2": y2
                 };
-
+                this.Undos = [];
                 this.Actions.push(action);
             }
         }else if (this.dragRight === true)
@@ -1269,11 +1383,17 @@ class Graph {
      * @return {undefined}
      */
     onHoverEdge(edge){
-        var id = edge[0].id;
-        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
-        
-        this.Links[pos][0].color = "white";
-        this.focusLink = id;
+        try{
+            var id = edge[0].id;
+            var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+
+            this.Links[pos][0].color = "white";
+            this.focusLink = id;
+        }
+        catch(err)
+        {
+            console.log("Link No Longer Exists");
+        }
         
         this.refreshGraph();
     }
