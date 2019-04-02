@@ -615,7 +615,7 @@ class Graph {
                 "x2": redo.x2,
                 "y2": redo.y2
             };
-            
+            this.Undos.pop();
             this.Undos.push(action);
         }else if (type === "deleteEdge")
         {
