@@ -22,7 +22,7 @@ class Graph {
         
         //Size and width of graph
         this.width = x/12*6; //Based upon bootstrap col size, in this case a col-6
-        this.height = y/10*9; 
+        this.height = y/10*9; //Height is 9/10ths of screen
         
         //Used for Visualisation (Bipartite Graph)
         this.Accounts = new Array();
@@ -71,10 +71,15 @@ class Graph {
     } 
     
     /**
-     * Adds Node to graph of specified type
+     * Add Node to graph
+     * 
      * 
      * @param {type} name
      * @param {type} type
+     * @param {type} icon
+     * @param {type} x
+     * @param {type} y
+     * @param {type} clickToAdd
      * @return {Graph.addNode.account}
      */
     addNode(name, type, icon, x, y, clickToAdd)
@@ -1609,41 +1614,5 @@ class Graph {
         localStorage.setItem("jsongraph", null);
         
         this.refreshGraph();
-    }
-    
-    
-    /*
-     * 
-     * Legacy Methods for Adding Nodes and Edges to graph
-     * 
-     * USED FOR TESTING ONLY
-     * 
-     */
-    
-    startLink()
-    {
-        this.nodeInfoNeeded = "start";
-        
-        return true;
-    }
-
-    getFirstNodeInfo(ID,x,y)
-    {
-        this.nodeLinkA = [ID,x,y];
-        this.nodeInfoNeeded = "end";
-        
-        return true;
-    }
-
-    getSecondNodeInfo(ID,x,y)
-    {
-        this.nodeLinkB = [ID,x,y];
-        this.addLink(this.nodeLinkB[0], this.nodeLinkA[0], this.nodeLinkA[1], this.nodeLinkA[2], this.nodeLinkB[1], this.nodeLinkB[2]);
-        this.nodeInfoNeeded = "none";
-        this.nodeLinkA = [];
-        this.nodeLinkB = [];
-        this.refreshGraph();
-        
-        return true;
     }
 }
