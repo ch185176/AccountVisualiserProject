@@ -21,8 +21,8 @@ class Graph {
         y = w.innerHeight|| e.clientHeight|| g.clientHeight;
         
         //Size and width of graph
-        this.width = x/12*7; //Based upon bootstrap col size, in this case a col-7
-        this.height = y/5*4; 
+        this.width = x/12*6; //Based upon bootstrap col size, in this case a col-6
+        this.height = y/10*9; //Height is 9/10ths of screen
         
         //Used for Visualisation (Bipartite Graph)
         this.Accounts = new Array();
@@ -65,16 +65,21 @@ class Graph {
         
         //Graph Color Variables
         //Retrieved from Color picker http://colorbrewer2.org/#type=sequential&scheme=BuGn&n=3
-        this.linkColors = ["#000000", "#8e0152", "#c51b7d", "#de77ae", "#f1b6da", "#fde0ef", "#e6f5d0", "#b8e186", "#7fbc41", "#4d9221", "#276419"];
-        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788"];
+        this.linkColors = ["#000000", "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a"];
+        this.nodeColors = ["#7f3b08", "#b35806", "#e08214", "#fdb863", "#fee0b6", "#d8daeb", "#b2abd2", "#8073ac", "#542788", "#2d004b"];
         
     } 
     
     /**
-     * Adds Node to  graph of specified type
+     * Add Node to graph
+     * 
      * 
      * @param {type} name
      * @param {type} type
+     * @param {type} icon
+     * @param {type} x
+     * @param {type} y
+     * @param {type} clickToAdd
      * @return {Graph.addNode.account}
      */
     addNode(name, type, icon, x, y, clickToAdd)
@@ -84,7 +89,7 @@ class Graph {
         var color;
         
         //TODO:::Refactor code and find better method of seperating node types
-        if (type === "email")
+        if (type === "login")
         {
             if (clickToAdd === true){
                 xpos = x;
@@ -94,6 +99,17 @@ class Graph {
                 ypos = (this.height*0.2);
             }
             color = this.nodeColors[0];
+        }
+        else if (type === "email")
+        {
+            if (clickToAdd === true){
+                xpos = x;
+                ypos = y;
+            }else{
+                xpos = this.currentEmailPOS;
+                ypos = (this.height*0.2);
+            }
+            color = this.nodeColors[1];
             this.currentEmailPOS = this.currentEmailPOS + 120;
         } else if (type === "password")
         {
@@ -104,7 +120,7 @@ class Graph {
                 xpos = this.currentPasswordPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[1];
+            color = this.nodeColors[2];
             this.currentPasswordPOS = this.currentPasswordPOS + 120;
         } else if (type === "device")
         {
@@ -115,7 +131,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[2];
+            color = this.nodeColors[3];
         } else if (type === "biometric")
         {
             if (clickToAdd === true){
@@ -125,7 +141,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[3];
+            color = this.nodeColors[4];
         } else if (type === "shopping")
         {
             if (clickToAdd === true){
@@ -135,7 +151,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[4];
+            color = this.nodeColors[5];
         } else if (type === "social")
         {
             if (clickToAdd === true){
@@ -145,7 +161,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[5];
+            color = this.nodeColors[6];
         } else if (type === "banking")
         {
             if (clickToAdd === true){
@@ -155,7 +171,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[6];
+            color = this.nodeColors[7];
         } else if (type === "crypto")
         {
             if (clickToAdd === true){
@@ -165,7 +181,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[7];
+            color = this.nodeColors[8];
         } else if (type === "2fa")
         {
             if (clickToAdd === true){
@@ -175,7 +191,7 @@ class Graph {
                 xpos = this.currentEmailPOS;
                 ypos = (this.height*0.7);
             }
-            color = this.nodeColors[8];
+            color = this.nodeColors[9];
         }
         
         var account = {
@@ -266,8 +282,31 @@ class Graph {
     deleteNode(id)
     {
         var pos = this.Accounts.map(function(e) { return e.id; }).indexOf(id);
-        var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(id);
-        this.Actions[pos1].action = "deleteNode";
+        var edgesTo = this.Links.filter(edge=>(edge[2].TargetID === id));
+        var edgesFrom = this.Links.filter(edge=>(edge[1].SourceID === id));      
+        
+        var action = {
+        "action": "deleteNode",
+        "nodeid": this.Accounts[pos].id,
+        "x_axis":this.Accounts[pos].x_axis,
+        "y_axis":this.Accounts[pos].y_axis,
+        "type": this.Accounts[pos].type,
+        "name": this.Accounts[pos].name,
+        "color":this.Accounts[pos].color,
+        "icon":this.Accounts[pos].icon,
+        "linksTo": edgesTo,
+        "linksFrom": edgesFrom
+        };
+        this.Actions.push(action);
+        
+        edgesTo.forEach((edge)=>{
+            this.deleteLink(edge[0].id);
+        });
+        
+        edgesFrom.forEach((edge)=>{
+            this.deleteLink(edge[0].id);
+        });
+        
         this.Accounts.splice(pos, 1);
         
         return this.Accounts[pos];
@@ -412,7 +451,6 @@ class Graph {
         var colorAmount = this.linkColors.length - 1;
         
         var currentColor = this.Links[pos][0].colorType;
-        console.log(currentColor);
         
         if (colorAmount === currentColor)
         {
@@ -437,29 +475,92 @@ class Graph {
     {
         var undo = this.Actions.pop();
         this.Actions.push(undo);
-        
         var type = undo.action;
         
         if (type === "addNode")
         {
             this.deleteNode(undo.nodeid);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
         }else if (type === "deleteNode")
         {
-            this.addNode(undo.name, undo.type, undo.icon, undo.x_axis, undo.y_axis, true);
+            var node = this.addNode(undo.name, undo.type, undo.icon, undo.x_axis, undo.y_axis, true);
+            try{
+                var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(undo.nodeid);
+                this.Actions[pos1].nodeid = node.id;
+                
+            }catch(err)
+            {
+                console.log("No Action");
+            } 
+            
+            var linksTo = undo.linksTo;
+            var linksFrom = undo.linksFrom;
+            
+            linksTo.forEach((links)=>{
+                this.addLink(links[1].SourceID, node.id, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            linksFrom.forEach((links)=>{
+                this.addLink(node.id, links[2].TargetID, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            this.Actions.pop();
+            var undo = this.Actions.pop();
+            undo.nodeid = node.id;
+            undo.action = "addNode";
+            this.Undos.push(undo);
         }else if (type === "addEdge")
         {
             this.deleteLink(undo.edgeid);
-            var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(undo.edgeid);
-            if (pos1 !== undefined)
-            {
-                this.Actions[pos1].action = "deleteEdge";
-            }
+          
+            var action = {
+                "action": "deleteEdge",
+                "edgeid": undo.edgeid,
+                "label": "",
+                "SourceID": undo.SourceID,
+                "x1": undo.x1,
+                "y1": undo.y1,
+                "TargetID": undo.targetID,
+                "x2": undo.x2,
+                "y2": undo.y2
+            };
+            
+            this.Actions.push(action);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
+            
         }else if (type === "deleteEdge")
         {
-            this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
+            var link = this.addLink(undo.SourceID, undo.TargetID, undo.x1, undo.y1, undo.x2, undo.y2);
+            var edgeID = link[0].id;
+            var sourceID = link[1].SourceID;
+            var x1 = link[1].x;
+            var y1 = link[1].y;
+            var targetID = link[2].TargetID;
+            var x2 = link[2].x;
+            var y2 = link[2].y;
+            
+            var action = {
+                "action": "addEdge",
+                "edgeid": edgeID,
+                "label": "",
+                "SourceID": sourceID,
+                "x1": x1,
+                "y1": y1,
+                "TargetID": targetID,
+                "x2": x2,
+                "y2": y2
+            };
+            
+            this.Actions.push(action);
+            var undo = this.Actions.pop();
+            this.Undos.push(undo);
+            this.Actions.pop();
         }
-        var undo = this.Actions.pop();
-        this.Undos.push(undo);
+        console.log(this.Undos);
     }
     
     /**
@@ -473,23 +574,54 @@ class Graph {
     {
         var redo = this.Undos.pop();
         this.Undos.push(redo);
-        
+        console.log(this.Undos);
         var type = redo.action;
         
         if (type === "addNode")
         {
             this.deleteNode(redo.nodeid);
+            this.Undos.pop();
         }else if (type === "deleteNode")
         {
-            this.addNode(redo.name, redo.type, redo.icon, redo.x_axis, redo.y_axis, true);
+            var node = this.addNode(redo.name, redo.type, redo.icon, redo.x_axis, redo.y_axis, true);
+
+            try{
+                var pos1 = this.Actions.map(function(e) { return e.nodeid; }).indexOf(redo.nodeid);
+                this.Actions[pos1].nodeid = node.id;
+                
+            }catch(err)
+            {
+                console.log("No Action");
+            } 
+            
+            var linksTo = redo.linksTo;
+            var linksFrom = redo.linksFrom;
+            
+            linksTo.forEach((links)=>{
+                this.addLink(links[1].SourceID, node.id, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
+            
+            linksFrom.forEach((links)=>{
+                this.addLink(node.id, links[2].TargetID, links[1].x, links[1].y, links[2].x, links[2].y);
+            });
         }else if (type === "addEdge")
         {
             this.deleteLink(redo.edgeid);
             var pos1 = this.Actions.map(function(e) { return e.edgeid; }).indexOf(redo.edgeid);
-            if (pos1 !== undefined)
-            {
-                this.Actions[pos1].action = "deleteEdge";
-            }
+            
+            var action = {
+                "action": "deleteEdge",
+                "edgeid": redo.edgeid,
+                "label": "",
+                "SourceID": redo.SourceID,
+                "x1": redo.x1,
+                "y1": redo.y1,
+                "TargetID": redo.targetID,
+                "x2": redo.x2,
+                "y2": redo.y2
+            };
+            this.Undos.pop();
+            this.Undos.push(action);
         }else if (type === "deleteEdge")
         {
             var link = this.addLink(redo.SourceID, redo.TargetID, redo.x1, redo.y1, redo.x2, redo.y2);
@@ -513,7 +645,7 @@ class Graph {
                 "y2": y2
             };
             
-            this.Actions.push(action);
+            this.Undos.push(action);
         }      
         var redo = this.Undos.pop();
     }
@@ -555,10 +687,28 @@ class Graph {
                     {
                         this.deleteNode(this.focusNode);
                         this.focusNode = null;
+                        this.Undos = [];
                         this.refreshGraph();
                     }else if(this.focusLink !== null)
                     {
+                        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(this.focusLink);;
+                        var link = this.Links[pos];
+                        console.log(link);
+                        var action = {
+                            "action": "deleteEdge",
+                            "edgeid": link[0].id,
+                            "label": "",
+                            "SourceID": link[1].SourceID,
+                            "x1": link[1].x,
+                            "y1": link[1].y,
+                            "TargetID": link[2].TargetID,
+                            "x2": link[2].x,
+                            "y2": link[2].y
+                        };
                         this.deleteLink(this.focusLink);
+                        this.Undos = [];
+                        this.Actions.push(action);
+                        console.log(this.Actions);
                         this.focusLink = null;
                         this.refreshGraph();
                     }
@@ -928,6 +1078,7 @@ class Graph {
                         return '\uf2b6';
                     }
                 })     // Specify your icon in unicode
+                        .on('click', (d) => console.log("test"))
             .on('mouseover', (d)=> this.onHoverNode(d))
             .on('mouseout', (d)=> this.offHoverNode(d))
             //Drag Attributes
@@ -967,6 +1118,11 @@ class Graph {
         py = {y: point[1]};
         if(document.getElementById('accordion').children[0].attributes[4].nodeValue === "true")
         {
+            var name = document.getElementById('addlogin').elements.loginname.value;
+            var icon = document.getElementById('addlogin').elements.icon.value;
+            var type = "login";
+        }else if(document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
+        {
             var name = document.getElementById('addemail').elements.emailname.value;
             var icon = document.getElementById('addemail').elements.icon.value;
             var type = "email";
@@ -993,17 +1149,17 @@ class Graph {
             var name = document.getElementById('adddevice').elements.devicename.value;
             var icon = document.getElementById('adddevice').elements.icon.value;
             var type = "device";
-        }else if (document.getElementById('accordion').children[6].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addshopping').elements.shoppingname.value;
             var icon = document.getElementById('addshopping').elements.icon.value;
             var type = "shopping";
-        }else if (document.getElementById('accordion').children[8].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addsocial').elements.socialname.value;
             var icon = document.getElementById('addsocial').elements.icon.value;
             var type = "social";
-        }else if (document.getElementById('accordion').children[10].attributes[4].nodeValue === "true")
+        }else if (document.getElementById('accordion').children[12].attributes[4].nodeValue === "true")
         {
             var name = document.getElementById('addcurrency').elements.bankingname.value;
             var icon = document.getElementById('addcurrency').elements.icon.value;
@@ -1016,6 +1172,8 @@ class Graph {
                 type = "crypto";
             }
         }
+        
+        this.Undos = [];
         this.addNode(name, type, icon, px.x, py.y, true);
         this.refreshGraph();
         
@@ -1164,7 +1322,7 @@ class Graph {
                     "x2": x2,
                     "y2": y2
                 };
-
+                this.Undos = [];
                 this.Actions.push(action);
             }
         }else if (this.dragRight === true)
@@ -1223,11 +1381,17 @@ class Graph {
      * @return {undefined}
      */
     onHoverEdge(edge){
-        var id = edge[0].id;
-        var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
-        
-        this.Links[pos][0].color = "white";
-        this.focusLink = id;
+        try{
+            var id = edge[0].id;
+            var pos = this.Links.map(function(e) { return e[0].id; }).indexOf(id);
+
+            this.Links[pos][0].color = "white";
+            this.focusLink = id;
+        }
+        catch(err)
+        {
+            console.log("Link No Longer Exists");
+        }
         
         this.refreshGraph();
     }
@@ -1441,7 +1605,6 @@ class Graph {
         
         var output = JSON.parse(localStorage.getItem("jsongraph"));
         
-        console.log(output.nodes);
         
         this.currentNodeID = output.currentNodeID;
         this.currentEdgeID = output.currentEdgeID;
@@ -1451,41 +1614,5 @@ class Graph {
         localStorage.setItem("jsongraph", null);
         
         this.refreshGraph();
-    }
-    
-    
-    /*
-     * 
-     * Legacy Methods for Adding Nodes and Edges to graph
-     * 
-     * USED FOR TESTING ONLY
-     * 
-     */
-    
-    startLink()
-    {
-        this.nodeInfoNeeded = "start";
-        
-        return true;
-    }
-
-    getFirstNodeInfo(ID,x,y)
-    {
-        this.nodeLinkA = [ID,x,y];
-        this.nodeInfoNeeded = "end";
-        
-        return true;
-    }
-
-    getSecondNodeInfo(ID,x,y)
-    {
-        this.nodeLinkB = [ID,x,y];
-        this.addLink(this.nodeLinkB[0], this.nodeLinkA[0], this.nodeLinkA[1], this.nodeLinkA[2], this.nodeLinkB[1], this.nodeLinkB[2]);
-        this.nodeInfoNeeded = "none";
-        this.nodeLinkA = [];
-        this.nodeLinkB = [];
-        this.refreshGraph();
-        
-        return true;
     }
 }

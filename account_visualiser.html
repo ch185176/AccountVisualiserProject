@@ -6,7 +6,8 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>Graph</title>
+        <title>Account Visualiser</title>
+        <link rel="shortcut icon" type="image/png" href="img/icon.jpg">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -43,7 +44,7 @@ and open the template in the editor.
         <div class="container-fluid pt-2">
             
             <div class="row">
-                <div class="col-2">
+                <div class="col-md-3">
                     
                     <!--User Instructions-->
                     <h2 class="text-center text-white rounded" style="background-color:#464646;">Input</h2>
@@ -92,7 +93,7 @@ and open the template in the editor.
                     </div>
                     
                     <!--Upload and download button section-->
-                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Upload/Download</h2>
+                    <h2 class="text-center text-white rounded" style="background-color:#464646;">Import/Export</h2>
                     <div id="import" class="pb-2">
                         <div class="row justify-content-center">
                             <input type="file" id="jsonUpload">
@@ -106,20 +107,20 @@ and open the template in the editor.
                         <div class="row justify-content-center">
                             <button id='download' class='btn btn-md ' style='background-color:#4365E1;' onclick='G.exportJSON()'>
                                 <i class="fas fa-download"></i>
-                                Download
+                                Export
                             </button>
                         </div>
                     </div>
                 </div>
                 
                 <!-- This is where the account visualiser lives-->
-                <div class="col-7" id="graph" style="padding:0;"></div>
+                <div class="col-md-6" id="graph" style="padding:0;"></div>
                 
                 <!-- ACCOUNT VISUALISER INIT-->
                 <script>
                     G.drawGraph();
                 </script>
-                <div class="col-3">
+                <div class="col-md-3">
                     <h2 class="text-center text-white rounded" style="background-color:#464646;">Add a Node</h2>
                     <div class="row justify-content-center">
                         <p class="font-weight-bold">Choose Icon and Label</p>
@@ -128,43 +129,78 @@ and open the template in the editor.
                     
                     <!-- Accordion form used to specify node icons and types -->
                     <div id="accordion">
-                        <h3>Email</h3>
+                        <h3>Login</h3>
                         <div>
-                            <form id="addemail">
+                            <form id="addlogin" onkeypress="return event.keyCode !== 13;">
                                 <div class="form-group">
-                                    <input type="radio" name="icon" id="radio1" value="default" checked>        
-                                    <label for="radio1">
-                                        <span class="fa-stack">
-                                            <i class="far fa-envelope-open fa-stack-1x"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio2" value="google">        
-                                    <label for="radio2">
-                                        <span class="fa-stack">
-                                            <i class="fab fa-google fa-stack-1x"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio3" value="outlook">     
-                                    <label for="radio3">
-                                        <span class="fa-stack">
-                                            <i class="fab fa-windows fa-stack-1x"></i>
-                                        </span>
-                                    </label><br>
-                                    <input type="radio" name="icon" id="radio4" value="yahoo">     
-                                    <label for="radio4">
-                                        <span class="fa-stack">
-                                            <i class="fab fa-yahoo fa-stack-1x"></i>
-                                        </span>
-                                    </label><br>
+                                    <div class ="row">
+                                        <div class ="col-4">
+                                            <p class="text-black-50">Email Address</p>
+                                            <input type="radio" name="icon" id="radio1" value="default" checked>        
+                                            <label for="radio1">
+                                                <span class="fa-stack">
+                                                    <i class="far fa-envelope-open fa-stack-1x"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio2" value="google">        
+                                            <label for="radio2">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-google fa-stack-1x"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio3" value="outlook">     
+                                            <label for="radio3">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-windows fa-stack-1x"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio4" value="yahoo">     
+                                            <label for="radio4">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-yahoo fa-stack-1x"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                        <div class ="col-4">
+                                            <p class="text-black-50">Social Media</p>
+                                            <input type="radio" name="icon" id="radio1" value="facebook">        
+                                            <label for="radio1">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-facebook-square"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio2" value="instagram">        
+                                            <label for="radio2">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-instagram"></i>
+                                                </span>
+                                            </label><br>
+                                            <input type="radio" name="icon" id="radio3" value="twitter">        
+                                            <label for="radio3">
+                                                <span class="fa-stack">
+                                                    <i class="fab fa-twitter-square"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                        <div class ="col-4">
+                                            <p class="text-black-50">Generic</p>
+                                            <input type="radio" name="icon" id="radio4" value="social">        
+                                            <label for="radio4">
+                                                <span class="fa-stack">
+                                                    <i class="fas fa-user-circle"></i>
+                                                </span>
+                                            </label><br>
+                                        </div>
+                                    </div>
 
-                                <label for="emailname">Label</label>
-                                <input type="text" name="emailname" class="form-control" placeholder="ie. home">
+                                <label for="loginname">Label</label>
+                                <input type="text" name="loginname" class="form-control" placeholder="ie. email">
                                 </div>
                             </form>
                         </div>
                         <h3>Security</h3>
                         <div>
-                            <form id="addsecurity">
+                            <form id="addsecurity" onkeypress="return event.keyCode != 13;">
                                 <div class="form-group">
                                     <div class='row'>
                                         <div class='col-4'>
@@ -189,7 +225,7 @@ and open the template in the editor.
                                             </label><br>
                                         </div>
                                         <div class='col-4'>
-                                            <p class="text-black-50">Two Factor Authentication</p>
+                                            <p class="text-black-50">2FA</p>
                                             <input type="radio" name="icon" id="radio4" value="sms">        
                                             <label for="radio1">
                                                 <span class="fa-stack">
@@ -233,7 +269,7 @@ and open the template in the editor.
                         </div>
                         <h3>Device</h3>
                         <div>
-                            <form id="adddevice">
+                            <form id="adddevice" onkeypress="return event.keyCode != 13;">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="mobile" checked>        
                                     <label for="radio1">
@@ -265,9 +301,43 @@ and open the template in the editor.
                                 </div>
                             </form>
                         </div>
-                        <h3>Shopping</h3>
+                        <h3>Email Account</h3>
                         <div>
-                            <form id="addshopping">
+                            <form id="addemail" onkeypress="return event.keyCode != 13;">
+                                <div class="form-group">
+                                    <input type="radio" name="icon" id="radio1" value="default" checked>        
+                                    <label for="radio1">
+                                        <span class="fa-stack">
+                                            <i class="far fa-envelope-open fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio2" value="google">        
+                                    <label for="radio2">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-google fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio3" value="outlook">     
+                                    <label for="radio3">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-windows fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+                                    <input type="radio" name="icon" id="radio4" value="yahoo">     
+                                    <label for="radio4">
+                                        <span class="fa-stack">
+                                            <i class="fab fa-yahoo fa-stack-1x"></i>
+                                        </span>
+                                    </label><br>
+
+                                <label for="emailname">Label</label>
+                                <input type="text" name="emailname" class="form-control" placeholder="ie. home">
+                                </div>
+                            </form>
+                        </div>
+                        <h3>Shopping Account</h3>
+                        <div>
+                            <form id="addshopping" onkeypress="return event.keyCode != 13;">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="amazon" checked>        
                                     <label for="radio1">
@@ -294,9 +364,9 @@ and open the template in the editor.
                                 </div>
                             </form>
                         </div>
-                        <h3>Social Media</h3>
+                        <h3>Social Media Account</h3>
                         <div>
-                            <form id="addsocial">
+                            <form id="addsocial" onkeypress="return event.keyCode != 13;">
                                 <div class="form-group">
                                     <input type="radio" name="icon" id="radio1" value="facebook" checked>        
                                     <label for="radio1">
@@ -331,7 +401,7 @@ and open the template in the editor.
                         </div>
                         <h3>Currency</h3>
                         <div>
-                            <form id="addcurrency">
+                            <form id="addcurrency" onkeypress="return event.keyCode != 13;">
                                 <div class="form-group">
                                     <div class='row'>
                                             <div class='col-6'>
