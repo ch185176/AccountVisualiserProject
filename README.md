@@ -7,5 +7,7 @@ This project aims to create a visualization tool to enable users to enter their 
 ### Previous Research
 This project aims to continue work by MSc Callum Coward.
 
+[Gitlab Repository](https://gitlab.com/cjcoward-msc-project/account_visualiser)
+
 ### Dependencies and Frameworks
 This Project makes use of [D3.js](https://d3js.org/) for the graphing functionality and [Jasmine](https://jasmine.github.io/) for unit testing.
