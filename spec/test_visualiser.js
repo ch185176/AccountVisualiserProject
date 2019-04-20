@@ -51,10 +51,10 @@ describe("Adding and Removing Nodes", function() {
     it("Finds an email near position 5,6", function() {
         var x=5;
         var y=6;
-        test.addNode("name", "email", "test", 50, 50, true);
+        testNode = test.addNode("name", "email", "test", 50, 50, true);
         output = test.getNodesNearCoords(x, y);
-        
-        test.deleteNode(2);
+
+        test.deleteNode(3);
         expect(output[0].id).toBe(1);
     });
         
