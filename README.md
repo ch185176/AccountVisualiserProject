@@ -11,7 +11,7 @@ Included in this repository is the webapp Account visualiser. This node graphing
 Currently this tool is live on [my website](https://www.craig-hutcheon.uk/account_visualiser/).
 
 #### Requirements
-Unfortunatley this application has limited browser support. To interact with the graph you must have a modern browser with HTML5 support such as Edge, Chrome or Firefox. Safari is not supported. At this time mobile devices are not supported.
+Unfortunately this application has limited browser support. To interact with the graph you must have a modern browser with HTML5 support such as Edge, Chrome or Firefox. Safari is not supported. At this time mobile devices are not supported.
 
 ### Previous Research
 This project aims to continue work by MSc Callum Coward.
